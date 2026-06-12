@@ -1,0 +1,42 @@
+@font-face {
+	font-family: 'metricas-mvrox';
+	src: url("./static/font/metricas-mvrox.ttf");
+}
+@font-face {
+	font-family: '阿里巴巴普惠体';
+	src: url('./static/font/Alibaba-PuHuiTi-Regular.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'DingTalkJinBuTi';
+	src: url('./static/font/DingTalk JinBuTi.ttf');
+}
+
+html {
+	body {
+		font-family: 'DingTalkJinBuTi';
+	}
+}
+
+// nvue不能用标签命名样式，不能放在微信组件中，否则微信开发工具会报警告，无法使用标签名当做选择器
+/* #ifndef APP-NVUE */
+view,
+page,
+text,
+button,
+image,
+textarea,
+scroll-view,input {
+	box-sizing: border-box;
+}
+image {
+	display: block;
+}
+button {
+	margin: 0;
+	padding: 0;
+	background-color: #FFFF;
+}
+button::after {
+	border: none;
+}
+/* #endif */

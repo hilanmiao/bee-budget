@@ -11,7 +11,7 @@
 -   **双端同步**：PC 与 App 数据实时同步，随时随地查看
 
 ## 系统目录
-- **bee-budget-backend**：后端服务，，提供 RESTful API、数据存储与业务逻辑处理，基于 .Net10 实现
+- **bee-budget-backend**：后端服务，提供 RESTful API、数据存储与业务逻辑处理，基于 .Net10、MySql8、Redis 实现
 - **bee-budget-frontend**：PC Web 前端，基于 Vue3 实现的响应式管理后台
 - **bee-budget-app**：移动端应用，基于 UniApp Vue2 实现，目前支持 Android/H5
 
@@ -21,8 +21,10 @@
 | :---: | :---: |
 |  ![App记账](app-2.png) |  ![PC记账](frontend-2.png) |
 
-## 演示环境
+## 快速开始
 
-1.  访问 PC 端网址或下载 App
-2.  登录管理员账号：admin 密码：123456
-
+1. 安装好必须的运行环境
+2. 运行根目录下的`init.sql`文件，创建数据库、测试数据
+3. 启动后端WebApi项目、前端
+4. 访问 PC 端网址 http://localhost:20002/frontend/
+5. 登录管理员账号：admin 密码：123456

@@ -1,0 +1,144 @@
+{
+  "easycom": {
+    "^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
+  },
+  "pages": [
+    {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "工作台",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/user/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/statistic/index",
+      "style": {
+        "navigationBarTitleText": "统计",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/my/myInfo",
+      "style": {
+        "navigationBarTitleText": "个人中心",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/user/set",
+      "style": {
+        "navigationBarTitleText": "设置",
+        "navigationStyle": "custom"
+      }
+    },  
+    {
+      "path": "pages/user/editPassword",
+      "style": {
+        "navigationBarTitleText": "修改密码",
+        "navigationStyle": "custom"
+      }
+    },    
+    {
+      "path": "pages/user/editNickName",
+      "style": {
+        "navigationBarTitleText": "修改信息",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/ledger/index",
+      "style": {
+        "navigationBarTitleText": "账本",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/ledger/detail",
+      "style": {
+        "navigationBarTitleText": "账本-详情",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/ledger/create",
+      "style": {
+        "navigationBarTitleText": "账本-创建",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/transaction-category/index",
+      "style": {
+        "navigationBarTitleText": "交易分类",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/transaction-category/detail",
+      "style": {
+        "navigationBarTitleText": "交易分类-详情",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/transaction-category/create",
+      "style": {
+        "navigationBarTitleText": "交易分类-创建",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/transaction/detail",
+      "style": {
+        "navigationBarTitleText": "交易-详情",
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "subPackages": [
+  ],
+  "preloadRule": {
+  },
+  "globalStyle": {
+    "mp-alipay": {
+      "allowsBounceVertical": "NO"
+    },
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#FFFFFF"
+  },
+  "tabBar": {
+    "color": "#ffffff",
+    "selectedColor": "#ffffff",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "iconPath": "static/basics.png",
+        "selectedIconPath": "static/basics.png",
+        "text": "工作台"
+      },
+      {
+        "pagePath": "pages/statistic/index",
+        "iconPath": "static/basics.png",
+        "selectedIconPath": "static/basics.png",
+        "text": "统计"
+      },
+      {
+        "pagePath": "pages/my/myInfo",
+        "iconPath": "static/basics.png",
+        "selectedIconPath": "static/basics.png",
+        "text": "我的"
+      }
+    ]
+  }
+}

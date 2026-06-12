@@ -1,0 +1,35 @@
+namespace Bedrock.Application.DataTransferObjects
+{
+    /// <summary>
+    /// 更新字典分类时使用的数据传输对象。
+    /// </summary>
+    public class UpdateSysDictCategoryDto
+    {
+        /// <summary>
+        /// 唯一标识符（主键）。
+        /// </summary>
+        public long Id { get; set; }
+
+        /// <summary>
+        /// 字典分类名称
+        /// 示例："用户状态"、"性别"、"操作类型"
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// 字典分类唯一编码（关键字段），用于关联字典项。
+        /// 必须全局唯一，前端通过此编码请求对应字典数据。
+        /// 示例："user_status"、"gender"、"operation_type"
+        public string Code { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 状态（0正常 1停用）
+        /// </summary>
+        public string Status { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 备注。
+        /// </summary>
+        public string? Remark { get; set; }
+    }
+
+}

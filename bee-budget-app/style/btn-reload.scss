@@ -1,0 +1,15 @@
+.reload {
+  position: fixed;
+  right: 20px;
+  bottom: 60px;
+  width: 60px;
+  height: 60px;
+  background-color: $theme-color-primary-brand;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  ::v-deep .u-icon__icon {
+    color: #FFFFFF !important;
+  }
+}

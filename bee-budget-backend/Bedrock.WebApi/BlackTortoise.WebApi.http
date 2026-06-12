@@ -1,0 +1,36 @@
+@Bedrock_HostAddress = http://localhost:5296
+
+GET {{Bedrock_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+# 角色状态变更API测试 - 启用角色
+PUT {{Bedrock_HostAddress}}/api/sys-role/1/status
+Content-Type: application/json
+
+{
+  "status": "1"
+}
+
+###
+
+# 角色状态变更API测试 - 停用角色
+PUT {{Bedrock_HostAddress}}/api/sys-role/1/status
+Content-Type: application/json
+
+{
+  "status": "0"
+}
+
+###
+
+# 获取角色列表
+GET {{Bedrock_HostAddress}}/api/sys-role/all
+Accept: application/json
+
+###
+
+# 分页获取角色
+GET {{Bedrock_HostAddress}}/api/sys-role/paged?pageNumber=1&pageSize=10
+Accept: application/json
