@@ -106,11 +106,6 @@ if (string.IsNullOrWhiteSpace(jwtConfig?.Key) || Encoding.UTF8.GetBytes(jwtConfi
 // 注册 IHttpContextAccessor，用于在非请求上下文中安全访问 HttpContext。
 builder.Services.AddHttpContextAccessor();
 
-// 注册 RabbitMQ Log Publisher Service
-// builder.Services.AddSingleton<RabbitMqLogPublisher>();
-// 注册 RabbitMQ Log Consumer Service
-// builder.Services.AddHostedService<RabbitMqLogConsumerService>();
-
 // 注册 SqlSugar 数据库上下文
 // 将字符串转换为 SqlSugar.DbType 枚举
 builder.Services.AddScoped<ISqlSugarClient>(s =>
