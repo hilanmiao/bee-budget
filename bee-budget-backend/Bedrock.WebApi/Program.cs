@@ -91,9 +91,6 @@ if (healthChecksConfig == null)
 // 绑定 TokenClean 配置
 builder.Services.Configure<TokenCleanupConfig>(builder.Configuration.GetSection("TokenClean"));
 
-// 绑定 RabbitMQ 配置
-builder.Services.Configure<RabbitMQConfig>(builder.Configuration.GetSection("RabbitMQ"));
-
 // 绑定 JWT 配置
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("Jwt"));
 var jwtConfig = builder.Configuration.GetSection("Jwt").Get<JwtConfig>();
@@ -288,9 +285,6 @@ builder.Services.AddScoped<ITransactionCategoryRepository, TransactionCategoryRe
 builder.Services.AddScoped<ITransactionCategoryService, TransactionCategoryService>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
-
-builder.Services.AddScoped<IProductionRepository, ProductionRepository>();
-builder.Services.AddScoped<IProductionService, ProductionService>();
 
 builder.Services.AddScoped<IFileStorageCenterRepository, FileStorageCenterRepository>();
 builder.Services.AddScoped<IFileStorageCenterService, FileStorageCenterService>();
