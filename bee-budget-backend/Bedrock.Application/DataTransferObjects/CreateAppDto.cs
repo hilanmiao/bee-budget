@@ -1,5 +1,8 @@
 ﻿namespace Bedrock.Application.DataTransferObjects
 {
+    /// <summary>
+    /// 创建App应用信息时使用的数据传输对象。
+    /// </summary>
     public class CreateAppDto
     {
 

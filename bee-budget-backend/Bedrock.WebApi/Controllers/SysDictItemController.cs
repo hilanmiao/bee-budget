@@ -1,4 +1,4 @@
-using Bedrock.WebApi.Responses;
+﻿using Bedrock.WebApi.Responses;
 using Bedrock.Application.DataTransferObjects;
 using Bedrock.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +31,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="createDto">创建字典项的 DTO。</param>
         /// <returns>返回创建成功的字典项信息。</returns>
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateSysDictItemDto createDto)
+        public async Task<ActionResult<ApiResponse<SysDictItemDto>>> CreateAsync([FromBody] CreateSysDictItemDto createDto)
         {
             if (createDto == null)
             {
@@ -59,7 +59,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="createDtos">字典项创建 DTO 列表。</param>
         /// <returns>返回成功创建的数量。</returns>
         [HttpPost("batch")]
-        public async Task<IActionResult> CreateBatchAsync([FromBody] List<CreateSysDictItemDto> createDtos)
+        public async Task<ActionResult<ApiResponse<int>>> CreateBatchAsync([FromBody] List<CreateSysDictItemDto> createDtos)
         {
             if (createDtos == null || !createDtos.Any())
             {
@@ -87,7 +87,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="updateDto">更新 DTO。</param>
         /// <returns>返回更新后的字典项 ID。</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateSysDictItemDto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdateAsync(long id, [FromBody] UpdateSysDictItemDto updateDto)
         {
             if (updateDto == null)
             {
@@ -114,7 +114,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="updateDtos">字典项更新 DTO 列表，包含 ID。</param>
         /// <returns>返回成功更新的数量。</returns>
         [HttpPut("batch")]
-        public async Task<IActionResult> UpdateBatchAsync([FromBody] List<UpdateSysDictItemDto> updateDtos)
+        public async Task<ActionResult<ApiResponse<int>>> UpdateBatchAsync([FromBody] List<UpdateSysDictItemDto> updateDtos)
         {
             if (updateDtos == null || !updateDtos.Any())
             {
@@ -141,7 +141,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">字典项 ID。</param>
         /// <returns>返回被删除的记录 ID。</returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<ActionResult<ApiResponse<long>>> DeleteAsync(long id)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -162,7 +162,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="request">包含 ID 列表的删除请求。</param>
         /// <returns>返回被删除的记录数量。</returns>
         [HttpDelete("batch")]
-        public async Task<IActionResult> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
+        public async Task<ActionResult<ApiResponse<int>>> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
         {
             if (request?.Ids == null || !request.Ids.Any())
             {
@@ -189,7 +189,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">字典项 ID。</param>
         /// <returns>返回字典项详情。</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<ActionResult<ApiResponse<SysDictItemDto>>> GetAsync(long id)
         {
             var dto = await _sysDictItemService.GetAsync(id);
 
@@ -210,7 +210,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="status">字典项状态（启用/禁用）。</param>
         /// <returns>返回所有匹配的字典项列表。</returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync(
+        public async Task<ActionResult<ApiResponse<List<SysDictItemDto>>>> GetAllAsync(
             [FromQuery] string? label = null,
             [FromQuery] string? status = null)
         {
@@ -233,7 +233,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="orderByType">排序方式（可选）。</param>
         /// <returns>返回分页结果。</returns>
         [HttpGet("paged")]
-        public async Task<IActionResult> GetPagedAsync(
+        public async Task<ActionResult<ApiResponse<PaginationResult<SysDictItemDto>>>> GetPagedAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? label = null,
@@ -255,7 +255,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="categoryCode">字典分类编码。</param>
         /// <returns>返回所有匹配的字典项列表。</returns>
         [HttpGet("by-category-code/{categoryCode}")]
-        public async Task<IActionResult> GetAllByCategoryCode(string categoryCode)
+        public async Task<ActionResult<ApiResponse<List<SysDictItemDto>>>> GetAllByCategoryCode(string categoryCode)
         {
             var dtos = await _sysDictItemService.GetAllByCategoryCodeAsync(categoryCode);
             var responseAll = ApiResponse<List<SysDictItemDto>>.OperationSuccess(dtos);
@@ -271,7 +271,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被更新的记录 ID。</returns>
         [HttpPut]
         [Route("change-status/{id}")]
-        public async Task<IActionResult> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
+        public async Task<ActionResult<ApiResponse<long>>> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
         {
             if (changeStatusDto == null)
             {

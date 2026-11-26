@@ -37,7 +37,7 @@ namespace Bedrock.WebApi.Controllers
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        public async Task<ActionResult<ApiResponse<LoginResponseDto>>> Login([FromBody] LoginDto loginDto)
         {
             // 提取客户端信息
             var clientInfoVO = GetCurrentClientInfo();
@@ -57,7 +57,7 @@ namespace Bedrock.WebApi.Controllers
         [HttpPost]
         [Route("refresh-token")]
         [AllowAnonymous]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
+        public async Task<ActionResult<ApiResponse<LoginResponseDto>>> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
         {
             // 提取客户端信息
             var clientInfoVO = GetCurrentClientInfo();
@@ -77,7 +77,7 @@ namespace Bedrock.WebApi.Controllers
         [HttpPost]
         [Route("revoke-refresh-token")]
         [AllowAnonymous]
-        public async Task<IActionResult> RevokeRefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
+        public async Task<ActionResult<ApiResponse<RefreshTokenDto>>> RevokeRefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
         {
             await _authService.RevokeRefreshTokenAsync(refreshTokenDto.UserId, refreshTokenDto.RefreshTokenId);
             var responseRevoke = ApiResponse<RefreshTokenDto>.OperationSuccess(refreshTokenDto);
@@ -92,7 +92,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回操作成功的响应。</returns>
         [HttpPost]
         [Route("force-logout")]
-        public async Task<IActionResult> ForceLogout([FromBody] ForceLogoutDto forceLogoutDto)
+        public async Task<ActionResult<ApiResponse<ForceLogoutDto>>> ForceLogout([FromBody] ForceLogoutDto forceLogoutDto)
         {
             await _authService.ForceLogoutAsync(forceLogoutDto.UserId);
             var responseFourceLogout = ApiResponse<ForceLogoutDto>.OperationSuccess(forceLogoutDto);
@@ -107,7 +107,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回用户认证信息的响应数据。</returns>
         [HttpGet]
         [Route("info")]
-        public async Task<IActionResult> GetAuthInfo()
+        public async Task<ActionResult<ApiResponse<AuthInfoDto>>> GetAuthInfo()
         {
             // 从 Claims 获取 UserID
             var userId = long.Parse(
@@ -127,7 +127,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回操作成功的响应。</returns>
         [HttpPost]
         [Route("logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<ActionResult<ApiResponse<object>>> Logout()
         {
             // 从 Claims 获取 UserID
             var userId = long.Parse(

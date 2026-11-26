@@ -33,7 +33,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentException">当 Demo1Id 和 Code 已存在时抛出。</exception>
         /// <exception cref="ArgumentNullException">当 createDto 为 null 时抛出。</exception>
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateDemo2Dto createDto)
+        public async Task<ActionResult<ApiResponse<Demo2Dto>>> CreateAsync([FromBody] CreateDemo2Dto createDto)
         {
             if (createDto == null)
             {
@@ -65,7 +65,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentNullException">当 updateDto 为 null 时抛出。</exception>
         /// <exception cref="InvalidOperationException">当数据库更新未影响任何行时抛出（并发冲突）。</exception>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateDemo2Dto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdateAsync(long id, [FromBody] UpdateDemo2Dto updateDto)
         {
             if (updateDto == null)
             {
@@ -93,7 +93,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被删除的样例2 ID。</returns>
         /// <exception cref="ArgumentException">当记录不存在或已被删除时抛出。</exception>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<ActionResult<ApiResponse<long>>> DeleteAsync(long id)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -114,7 +114,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="request">包含 ID 列表的删除请求。</param>
         /// <returns>返回被删除的记录数量。</returns>
         [HttpDelete("batch")]
-        public async Task<IActionResult> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
+        public async Task<ActionResult<ApiResponse<int>>> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
         {
             if (request?.Ids == null || !request.Ids.Any())
             {
@@ -143,7 +143,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被更新的记录 ID。</returns>
         [HttpPut]
         [Route("change-status/{id}")]
-        public async Task<IActionResult> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
+        public async Task<ActionResult<ApiResponse<long>>> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
         {
             if (changeStatusDto == null)
             {
@@ -169,7 +169,7 @@ namespace Bedrock.WebApi.Controllers
         ///// <param name="id">样例2 ID。</param>
         ///// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetAsync(long id)
+        //public async Task<ActionResult<ApiResponse<Demo2Dto>>> GetAsync(long id)
         //{
         //    var dto = await _demo2Service.GetAsync(id);
 
@@ -193,7 +193,7 @@ namespace Bedrock.WebApi.Controllers
         ///// <param name="endDate">结束日期，用于日期范围搜索（可选）。</param>
         ///// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         //[HttpGet("all")]
-        //public async Task<IActionResult> GetAllAsync(
+        //public async Task<ActionResult<ApiResponse<List<Demo2Dto>>>> GetAllAsync(
         //    [FromQuery] string? name = null,
         //    [FromQuery] string? status = null,
         //    [FromQuery] long? demo1Id = null,
@@ -220,7 +220,7 @@ namespace Bedrock.WebApi.Controllers
         ///// <param name="orderByType">排序方式（可选）。</param>
         ///// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         //[HttpGet("paged")]
-        //public async Task<IActionResult> GetPagedAsync(
+        //public async Task<ActionResult<ApiResponse<PaginationResult<Demo2Dto>>>> GetPagedAsync(
         //    [FromQuery] int pageNumber = 1,
         //    [FromQuery] int pageSize = 10,
         //    [FromQuery] string? name = null,
@@ -243,7 +243,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">样例2 ID。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<ActionResult<ApiResponse<Demo2Summary>>> GetAsync(long id)
         {
             var dto = await _demo2Service.GetSummaryAsync(id);
 
@@ -267,7 +267,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="endDate">结束日期，用于日期范围搜索（可选）。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync(
+        public async Task<ActionResult<ApiResponse<List<Demo2Summary>>>> GetAllAsync(
             [FromQuery] string? name = null,
             [FromQuery] string? status = null,
             [FromQuery] long? demo1Id = null,
@@ -294,7 +294,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="orderByType">排序方式（可选）。</param>
         /// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         [HttpGet("paged")]
-        public async Task<IActionResult> GetPagedAsync(
+        public async Task<ActionResult<ApiResponse<PaginationResult<Demo2Summary>>>> GetPagedAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? name = null,
@@ -317,7 +317,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="demo1Id">样例2Demo1Id。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("by-demo1-id/{demo1Id}")]
-        public async Task<IActionResult> GetAllByDemo1Id(long demo1Id)
+        public async Task<ActionResult<ApiResponse<List<Demo2Dto>>>> GetAllByDemo1Id(long demo1Id)
         {
             var dtos = await _demo2Service.GetAllByDemo1IdAsync(demo1Id);
             var responseAll = ApiResponse<List<Demo2Dto>>.OperationSuccess(dtos);

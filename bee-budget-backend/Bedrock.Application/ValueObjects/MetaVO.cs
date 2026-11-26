@@ -6,34 +6,48 @@ using System.Threading.Tasks;
 
 namespace Bedrock.Application.ValueObjects
 {
+    /// <summary>
+    /// 路由元信息值对象（VO），描述路由在侧边栏和面包屑中的展示方式。
+    /// </summary>
     public class MetaVO
     {
-        /**
-          * 设置该路由在侧边栏和面包屑中展示的名字
-          */
+        /// <summary>
+        /// 路由在侧边栏和面包屑中展示的名称。
+        /// </summary>
         public string Title { get; set; } = string.Empty;
 
-        /**
-         * 设置该路由的图标，对应路径src/assets/icons/svg
-         */
+        /// <summary>
+        /// 路由图标，对应路径 src/assets/icons/svg。
+        /// </summary>
         public string? Icon { get; set; }
 
-        /**
-         * 设置为true，则不会被 <keep-alive>缓存
-         */
+        /// <summary>
+        /// 是否不使用 &lt;keep-alive&gt; 缓存；为 true 时该路由不会被缓存。
+        /// </summary>
         public bool NoCache { get; set; }
 
-        /**
-         * 内链地址（http(s)://开头）
-         */
+        /// <summary>
+        /// 内链地址，以 http(s):// 开头。
+        /// </summary>
         public string? Link { get; set; }
 
+        /// <summary>
+        /// 使用标题和图标创建路由元信息。
+        /// </summary>
+        /// <param name="title">路由展示名称。</param>
+        /// <param name="icon">图标路径。</param>
         public MetaVO(string title, string? icon)
         {
             this.Title = title;
             this.Icon = icon;
         }
 
+        /// <summary>
+        /// 使用标题、图标和缓存设置创建路由元信息。
+        /// </summary>
+        /// <param name="title">路由展示名称。</param>
+        /// <param name="icon">图标路径。</param>
+        /// <param name="noCache">是否禁用 keep-alive 缓存。</param>
         public MetaVO(string title, string? icon, bool noCache)
         {
             this.Title = title;
@@ -41,6 +55,12 @@ namespace Bedrock.Application.ValueObjects
             this.NoCache = noCache;
         }
 
+        /// <summary>
+        /// 使用标题、图标和内链地址创建路由元信息。
+        /// </summary>
+        /// <param name="title">路由展示名称。</param>
+        /// <param name="icon">图标路径。</param>
+        /// <param name="link">内链地址，仅当以 http 开头时生效。</param>
         public MetaVO(string title, string? icon, string? link)
         {
             this.Title = title;
@@ -48,6 +68,13 @@ namespace Bedrock.Application.ValueObjects
             this.Link = link;
         }
 
+        /// <summary>
+        /// 使用标题、图标、缓存设置和内链地址创建路由元信息。
+        /// </summary>
+        /// <param name="title">路由展示名称。</param>
+        /// <param name="icon">图标路径。</param>
+        /// <param name="noCache">是否禁用 keep-alive 缓存。</param>
+        /// <param name="link">内链地址，仅当以 http 开头时生效。</param>
         public MetaVO(string title, string? icon, bool noCache, string? link)
         {
             this.Title = title;

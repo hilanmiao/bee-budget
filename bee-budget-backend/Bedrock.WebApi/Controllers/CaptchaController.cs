@@ -35,7 +35,7 @@ namespace Bedrock.WebApi.Controllers
         /// <response code="200">成功生成验证码。</response>
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Generate()
+        public async Task<ActionResult<ApiResponse<CaptchaDto>>> Generate()
         {
             var captchaDto = await _captchaService.GenerateAsync();
             var response = ApiResponse<CaptchaDto>.OperationSuccess(captchaDto);
@@ -54,7 +54,7 @@ namespace Bedrock.WebApi.Controllers
         /// <response code="400">输入参数无效。</response>
         [HttpPost]
         [Route("validate")]
-        public async Task<IActionResult> Validate([FromBody] ValidateCaptchaDto dto)
+        public async Task<ActionResult<ApiResponse<bool>>> Validate([FromBody] ValidateCaptchaDto dto)
         {
             if (dto == null || string.IsNullOrWhiteSpace(dto.CaptchaId) || string.IsNullOrWhiteSpace(dto.CaptchaContent))
             {

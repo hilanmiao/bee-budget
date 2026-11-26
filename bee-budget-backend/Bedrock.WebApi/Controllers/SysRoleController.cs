@@ -33,7 +33,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentException">当 key 或 name 已存在时抛出。</exception>
         /// <exception cref="ArgumentNullException">当 createDto 为 null 时抛出。</exception>
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateSysRoleDto createDto)
+        public async Task<ActionResult<ApiResponse<SysRoleDto>>> CreateAsync([FromBody] CreateSysRoleDto createDto)
         {
             if (createDto == null)
             {
@@ -65,7 +65,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentNullException">当 updateDto 为 null 时抛出。</exception>
         /// <exception cref="InvalidOperationException">当数据库更新未影响任何行时抛出（并发冲突）。</exception>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateSysRoleDto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdateAsync(long id, [FromBody] UpdateSysRoleDto updateDto)
         {
             if (updateDto == null)
             {
@@ -93,7 +93,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被删除的角色 ID。</returns>
         /// <exception cref="ArgumentException">当记录不存在或已被删除时抛出。</exception>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<ActionResult<ApiResponse<long>>> DeleteAsync(long id)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -116,7 +116,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentException">当部分 ID 不存在或已被删除时可能抛出。</exception>
 
         [HttpDelete("batch")]
-        public async Task<IActionResult> DeleteBatchAsync([FromBody] DeleteBatchRequest batchRequestDto)
+        public async Task<ActionResult<ApiResponse<int>>> DeleteBatchAsync([FromBody] DeleteBatchRequest batchRequestDto)
         {
             if (batchRequestDto?.Ids == null || !batchRequestDto.Ids.Any())
             {
@@ -143,7 +143,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">角色 ID。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<ActionResult<ApiResponse<SysRoleDto>>> GetAsync(long id)
         {
             var dto = await _sysRoleService.GetAsync(id);
 
@@ -164,7 +164,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="status">角色状态，用于精确匹配（可选）。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync(
+        public async Task<ActionResult<ApiResponse<List<SysRoleDto>>>> GetAllAsync(
             [FromQuery] string? name = null,
             [FromQuery] string? status = null)
         {
@@ -186,7 +186,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="orderByType">排序方式（可选）。</param>
         /// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         [HttpGet("paged")]
-        public async Task<IActionResult> GetPagedAsync(
+        public async Task<ActionResult<ApiResponse<PaginationResult<SysRoleDto>>>> GetPagedAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? name = null,
@@ -207,7 +207,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="key">角色的唯一权限字符（如 admin），用于精确匹配。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("by-dict-type/{key}")]
-        public async Task<IActionResult> GetBykeyAsync(string key)
+        public async Task<ActionResult<ApiResponse<SysRoleDto>>> GetBykeyAsync(string key)
         {
             var dto = await _sysRoleService.GetByKeyAsync(key);
 
@@ -229,7 +229,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被更新的记录 ID。</returns>
         [HttpPut]
         [Route("change-status/{id}")]
-        public async Task<IActionResult> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
+        public async Task<ActionResult<ApiResponse<long>>> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
         {
             if (changeStatusDto == null)
             {

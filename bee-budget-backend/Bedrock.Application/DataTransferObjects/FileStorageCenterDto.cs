@@ -1,5 +1,8 @@
 ﻿namespace Bedrock.Application.DataTransferObjects
 {
+    /// <summary>
+    /// 返回文件存储中心信息时使用的数据传输对象。
+    /// </summary>
     public class FileStorageCenterDto
     {
         /// <summary>

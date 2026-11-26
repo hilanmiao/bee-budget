@@ -33,7 +33,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentException">当 UserId 和 Name 已存在时抛出。</exception>
         /// <exception cref="ArgumentNullException">当 createDto 为 null 时抛出。</exception>
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateLedgerDto createDto)
+        public async Task<ActionResult<ApiResponse<LedgerDto>>> CreateAsync([FromBody] CreateLedgerDto createDto)
         {
             if (createDto == null)
             {
@@ -66,7 +66,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentNullException">当 updateDto 为 null 时抛出。</exception>
         /// <exception cref="InvalidOperationException">当数据库更新未影响任何行时抛出（并发冲突）。</exception>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateLedgerDto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdateAsync(long id, [FromBody] UpdateLedgerDto updateDto)
         {
             if (updateDto == null)
             {
@@ -94,7 +94,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被删除的账本 ID。</returns>
         /// <exception cref="ArgumentException">当记录不存在或已被删除时抛出。</exception>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<ActionResult<ApiResponse<long>>> DeleteAsync(long id)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -115,7 +115,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="request">包含 ID 列表的删除请求。</param>
         /// <returns>返回被删除的记录数量。</returns>
         [HttpDelete("batch")]
-        public async Task<IActionResult> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
+        public async Task<ActionResult<ApiResponse<int>>> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
         {
             if (request?.Ids == null || !request.Ids.Any())
             {
@@ -142,7 +142,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">账本 ID。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<ActionResult<ApiResponse<LedgerDto>>> GetAsync(long id)
         {
             var dto = await _ledgerService.GetAsync(id);
 
@@ -163,7 +163,7 @@ namespace Bedrock.WebApi.Controllers
         ///// <param name ="userId">账本UserId，用于精确搜索（可选）。</param>
         ///// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         //[HttpGet("all")]
-        //public async Task<IActionResult> GetAllAsync(
+        //public async Task<ActionResult<ApiResponse<List<LedgerDto>>>> GetAllAsync(
         //    [FromQuery] string? name = null,
         //    [FromQuery] long? userId = null)
         //{
@@ -179,7 +179,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name ="name">账本名称，用于模糊搜索（可选）。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync(
+        public async Task<ActionResult<ApiResponse<List<LedgerDto>>>> GetAllAsync(
             [FromQuery] string? name = null)
         {
             var currentUser = GetCurrentUser();
@@ -206,7 +206,7 @@ namespace Bedrock.WebApi.Controllers
         ///// <param name="orderByType">排序方式（可选）。</param>
         ///// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         //[HttpGet("paged")]
-        //public async Task<IActionResult> GetPagedAsync(
+        //public async Task<ActionResult<ApiResponse<PaginationResult<LedgerDto>>>> GetPagedAsync(
         //    [FromQuery] int pageNumber = 1,
         //    [FromQuery] int pageSize = 10,
         //    [FromQuery] string? name = null,
@@ -230,7 +230,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="orderByType">排序方式（可选）。</param>
         /// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         [HttpGet("paged")]
-        public async Task<IActionResult> GetPagedAsync(
+        public async Task<ActionResult<ApiResponse<PaginationResult<LedgerDto>>>> GetPagedAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? name = null,

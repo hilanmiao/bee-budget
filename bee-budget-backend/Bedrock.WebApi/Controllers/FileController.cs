@@ -37,7 +37,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回包含文件路径的 ApiResponse。</returns>
         [HttpPost]
         [Route("upload-image")]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        public async Task<ActionResult<ApiResponse<string>>> UploadImage(IFormFile file)
         {
             var url = await _fileService.UploadImageAsync(file);
             var response = ApiResponse<string>.OperationSuccess(url);
@@ -54,7 +54,7 @@ namespace Bedrock.WebApi.Controllers
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
         [Route("upload-file")]
-        public async Task<IActionResult> UploadFile(IFormFile file)
+        public async Task<ActionResult<ApiResponse<string>>> UploadFile(IFormFile file)
         {
             var url = await _fileService.UploadFileAsync(file);
             var response = ApiResponse<string>.OperationSuccess(url);
@@ -71,7 +71,7 @@ namespace Bedrock.WebApi.Controllers
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
         [Route("upload-and-unzip")]
-        public async Task<IActionResult> UploadAndUnzip(IFormFile file)
+        public async Task<ActionResult<ApiResponse<string>>> UploadAndUnzip(IFormFile file)
         {
             var url = await _fileService.UploadAndUnzipAsync(file);
             var response = ApiResponse<string>.OperationSuccess(url);

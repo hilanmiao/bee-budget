@@ -6,50 +6,53 @@ using System.Threading.Tasks;
 
 namespace Bedrock.Application.ValueObjects
 {
+    /// <summary>
+    /// 前端路由值对象（VO），描述一个可展示的路由节点。
+    /// </summary>
     public class RouterVO
     {
-        /**
-        * 路由名字
-        */
+        /// <summary>
+        /// 路由名称。
+        /// </summary>
         public string Name { get; set; } = string.Empty;
 
-        /**
-         * 路由地址
-         */
+        /// <summary>
+        /// 路由地址。
+        /// </summary>
         public string? Path { get; set; }
 
-        /**
-         * 是否隐藏路由，当设置 true 的时候该路由不会再侧边栏出现
-         */
+        /// <summary>
+        /// 是否隐藏路由；为 true 时该路由不会出现在侧边栏。
+        /// </summary>
         public bool Hidden { get; set; }
 
-        /**
-         * 重定向地址，当设置 noRedirect 的时候该路由在面包屑导航中不可被点击
-         */
+        /// <summary>
+        /// 重定向地址；设置 noRedirect 时该路由在面包屑导航中不可被点击。
+        /// </summary>
         public string Redirect { get; set; } = string.Empty;
 
-        /**
-         * 组件地址
-         */
+        /// <summary>
+        /// 路由对应的组件地址。
+        /// </summary>
         public string? Component { get; set; }
-        /**
-         * 路由参数：如 {"id": 1, "name": "ry"}
-         */
+        /// <summary>
+        /// 路由参数，如 {"id": 1, "name": "ry"}。
+        /// </summary>
         public string? Query { get; set; }
 
-        /**
-         * 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面
-         */
+        /// <summary>
+        /// 是否始终显示；当一个路由下的 children 超过 1 个时会自动变成嵌套模式。
+        /// </summary>
         public bool AlwaysShow { get; set; }
 
-        /**
-         * 其他元素
-         */
+        /// <summary>
+        /// 路由的元信息。
+        /// </summary>
         public MetaVO? Meta { get; set; }
 
-        /**
-         * 子路由
-         */
+        /// <summary>
+        /// 子路由列表。
+        /// </summary>
         public List<RouterVO> Children { get; set; } = new();
     }
 }

@@ -532,7 +532,7 @@ try
     // 开发环境中启用 Scalar UI
     if (app.Environment.IsDevelopment())
     {
-        // 映射 OpenAPI 文档（默认地址：https://localhost:xxxx/openapi.json）
+        // 映射 OpenAPI 文档（默认地址：https://localhost:xxxx/openapi/v1.json）
         app.MapOpenApi();
         // 映射 Scalar UI 默认访问地址: https://localhost:xxxx/scalar/v1
         app.MapScalarApiReference();

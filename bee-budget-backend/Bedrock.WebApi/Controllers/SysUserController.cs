@@ -1,4 +1,4 @@
-using Bedrock.WebApi.Responses;
+﻿using Bedrock.WebApi.Responses;
 using Bedrock.Application.DataTransferObjects;
 using Bedrock.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +31,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="createDto">创建用户的 DTO。</param>
         /// <returns>返回创建成功的用户信息。</returns>
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateSysUserDto createDto)
+        public async Task<ActionResult<ApiResponse<SysUserDto>>> CreateAsync([FromBody] CreateSysUserDto createDto)
         {
             if (createDto == null)
             {
@@ -60,7 +60,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="updateDto">更新 DTO。</param>
         /// <returns>返回被更新的用户 ID。</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateSysUserDto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdateAsync(long id, [FromBody] UpdateSysUserDto updateDto)
         {
             if (updateDto == null)
             {
@@ -87,7 +87,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">用户 ID。</param>
         /// <returns>返回被删除的用户 ID。</returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<ActionResult<ApiResponse<long>>> DeleteAsync(long id)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -108,7 +108,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="batchRequestDto">包含 ID 列表的删除请求。</param>
         /// <returns>返回被删除的记录数量。</returns>
         [HttpDelete("batch")]
-        public async Task<IActionResult> DeleteBatchAsync([FromBody] DeleteBatchRequest batchRequestDto)
+        public async Task<ActionResult<ApiResponse<int>>> DeleteBatchAsync([FromBody] DeleteBatchRequest batchRequestDto)
         {
             if (batchRequestDto?.Ids == null || !batchRequestDto.Ids.Any())
             {
@@ -135,7 +135,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">用户 ID。</param>
         /// <returns>返回用户详情。</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<ActionResult<ApiResponse<SysUserSummary>>> GetAsync(long id)
         {
             //var dto = await _sysUserService.GetAsync(id);
             var dto = await _sysUserService.GetSummaryAsync(id);
@@ -159,7 +159,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="status">状态（启用/禁用）。</param>
         /// <returns>返回所有匹配的用户列表。</returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync(
+        public async Task<ActionResult<ApiResponse<List<SysUserSummary>>>> GetAllAsync(
             [FromQuery] string? userName = null,
             [FromQuery] string? status = null)
         {
@@ -183,7 +183,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="orderByType">排序方式（可选）。</param>
         /// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         [HttpGet("paged")]
-        public async Task<IActionResult> GetPagedAsync(
+        public async Task<ActionResult<ApiResponse<PaginationResult<SysUserSummary>>>> GetPagedAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? userName = null,
@@ -206,7 +206,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="userName">用户名称（如 'admin'）。</param>
         /// <returns>返回匹配的用户。</returns>
         [HttpGet("by-user-name/{userName}")]
-        public async Task<IActionResult> GetByUserNameAsync(string userName)
+        public async Task<ActionResult<ApiResponse<SysUserDto>>> GetByUserNameAsync(string userName)
         {
             var dto = await _sysUserService.GetByUserNameAsync(userName);
 
@@ -228,7 +228,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被更新的记录 ID。</returns>
         [HttpPut]
         [Route("change-status/{id}")]
-        public async Task<IActionResult> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
+        public async Task<ActionResult<ApiResponse<long>>> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
         {
             if (changeStatusDto == null)
             {
@@ -256,7 +256,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被更新的记录 ID。</returns>
         [HttpPut]
         [Route("reset-password/{id}")]
-        public async Task<IActionResult> ResetPassword(long id, [FromBody] ResetUserPasswordDto resetUserPasswordDto)
+        public async Task<ActionResult<ApiResponse<long>>> ResetPassword(long id, [FromBody] ResetUserPasswordDto resetUserPasswordDto)
         {
             if (resetUserPasswordDto == null)
             {

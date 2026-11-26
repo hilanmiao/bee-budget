@@ -1,5 +1,8 @@
 ﻿namespace Bedrock.Application.DataTransferObjects
 {
+    /// <summary>
+    /// 返回树形选择控件节点信息时使用的数据传输对象。
+    /// </summary>
     public class TreeSelectDto
     {
         /// <summary>

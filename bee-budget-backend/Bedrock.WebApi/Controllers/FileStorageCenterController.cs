@@ -34,7 +34,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentException">当 Demo1Id 和 Code 已存在时抛出。</exception>
         /// <exception cref="ArgumentNullException">当 createDto 为 null 时抛出。</exception>
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateFileStorageCenterDto createDto)
+        public async Task<ActionResult<ApiResponse<FileStorageCenterDto>>> CreateAsync([FromBody] CreateFileStorageCenterDto createDto)
         {
             if (createDto == null)
             {
@@ -66,7 +66,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentNullException">当 updateDto 为 null 时抛出。</exception>
         /// <exception cref="InvalidOperationException">当数据库更新未影响任何行时抛出（并发冲突）。</exception>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateFileStorageCenterDto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdateAsync(long id, [FromBody] UpdateFileStorageCenterDto updateDto)
         {
             if (updateDto == null)
             {
@@ -94,7 +94,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被删除的文件存储中心 ID。</returns>
         /// <exception cref="ArgumentException">当记录不存在或已被删除时抛出。</exception>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<ActionResult<ApiResponse<long>>> DeleteAsync(long id)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -115,7 +115,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="request">包含 ID 列表的删除请求。</param>
         /// <returns>返回被删除的记录数量。</returns>
         [HttpDelete("batch")]
-        public async Task<IActionResult> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
+        public async Task<ActionResult<ApiResponse<int>>> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
         {
             if (request?.Ids == null || !request.Ids.Any())
             {
@@ -142,7 +142,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">文件存储中心 ID。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<ActionResult<ApiResponse<FileStorageCenterDto>>> GetAsync(long id)
         {
             var dto = await _fileStorageCenterService.GetAsync(id);
 
@@ -162,7 +162,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name = "name" > 文件存储中心名称，用于模糊搜索（可选）。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync(
+        public async Task<ActionResult<ApiResponse<List<FileStorageCenterDto>>>> GetAllAsync(
             [FromQuery] string? name = null)
         {
             var dtos = await _fileStorageCenterService.GetAllAsync(name);
@@ -182,7 +182,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         [HttpGet("paged")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetPagedAsync(
+        public async Task<ActionResult<ApiResponse<PaginationResult<FileStorageCenterDto>>>> GetPagedAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? name = null,

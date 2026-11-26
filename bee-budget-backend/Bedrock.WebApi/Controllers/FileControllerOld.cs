@@ -35,7 +35,7 @@
 //        /// <returns>返回包含文件路径的 ApiResponse。</returns>
 //        [HttpPost]
 //        [Route("upload-image")]
-//        public async Task<IActionResult> UploadImage(IFormFile file)
+//        public async Task<ActionResult<ApiResponse<string>>> UploadImage(IFormFile file)
 //        {
 //            // 1. 基础验证
 //            if (file == null || file.Length == 0)
@@ -109,7 +109,7 @@
 //        [RequestSizeLimit(MaxFileSize)]
 //        [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
 //        [Route("upload-file")]
-//        public async Task<IActionResult> UploadFile(IFormFile file)
+//        public async Task<ActionResult<ApiResponse<string>>> UploadFile(IFormFile file)
 //        {
 //            // 1. 基础验证
 //            if (file == null || file.Length == 0)
@@ -188,7 +188,7 @@
 //        [RequestSizeLimit(MaxFileSize)]
 //        [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
 //        [Route("upload-and-unzip")]
-//        public async Task<IActionResult> UploadAndUnzip(IFormFile file)
+//        public async Task<ActionResult<ApiResponse<string>>> UploadAndUnzip(IFormFile file)
 //        {
 //            // 1. 基础验证
 //            if (file == null || file.Length == 0)

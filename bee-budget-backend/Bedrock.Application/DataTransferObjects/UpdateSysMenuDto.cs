@@ -1,5 +1,8 @@
 ﻿namespace Bedrock.Application.DataTransferObjects
 {
+    /// <summary>
+    /// 更新系统菜单信息时使用的数据传输对象。
+    /// </summary>
     public class UpdateSysMenuDto
     {
         /// <summary>

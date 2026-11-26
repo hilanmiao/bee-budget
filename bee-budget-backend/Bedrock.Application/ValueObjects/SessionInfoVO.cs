@@ -32,11 +32,9 @@
         /// </summary>
         public string SessionId { get; set; } = string.Empty;
 
-        /// <summary>
-        /// 最后一次使用该会话访问 API 的时间（UTC）
-        /// 用于“活跃会话检测”或“自动踢出长时间未活动用户”
-        /// </summary>
-        /// 太麻烦，暂时不需要
+        // 最后一次使用该会话访问 API 的时间（UTC）
+        // 用于“活跃会话检测”或“自动踢出长时间未活动用户”
+        // 太麻烦，暂时不需要
         //public DateTime? LastAccessedAt { get; set; }
 
         /// <summary>

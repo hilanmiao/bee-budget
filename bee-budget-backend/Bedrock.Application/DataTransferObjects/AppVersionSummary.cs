@@ -1,5 +1,8 @@
 ﻿namespace Bedrock.Application.DataTransferObjects
 {
+    /// <summary>
+    /// 返回App版本摘要信息时使用的数据传输对象。
+    /// </summary>
     public class AppVersionSummary
     {
         /// <summary>

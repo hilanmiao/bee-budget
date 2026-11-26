@@ -7,7 +7,13 @@ namespace Bedrock.Application.DataTransferObjects
     /// </summary>
     public class ChangeUserProfilePasswordDto
     {
+        /// <summary>
+        /// 原密码。
+        /// </summary>
         public string OldPassword { get; set; } = string.Empty;
+        /// <summary>
+        /// 新密码。
+        /// </summary>
         public string NewPassword { get; set; } = string.Empty;
     }
 }

@@ -34,7 +34,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentException">当 AppId 和 VersionCode 已存在时抛出。</exception>
         /// <exception cref="ArgumentNullException">当 createDto 为 null 时抛出。</exception>
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateAppVersionDto createDto)
+        public async Task<ActionResult<ApiResponse<AppVersionDto>>> CreateAsync([FromBody] CreateAppVersionDto createDto)
         {
             if (createDto == null)
             {
@@ -66,7 +66,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentNullException">当 updateDto 为 null 时抛出。</exception>
         /// <exception cref="InvalidOperationException">当数据库更新未影响任何行时抛出（并发冲突）。</exception>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateAppVersionDto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdateAsync(long id, [FromBody] UpdateAppVersionDto updateDto)
         {
             if (updateDto == null)
             {
@@ -94,7 +94,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被删除的App版本 ID。</returns>
         /// <exception cref="ArgumentException">当记录不存在或已被删除时抛出。</exception>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<ActionResult<ApiResponse<long>>> DeleteAsync(long id)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -115,7 +115,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="request">包含 ID 列表的删除请求。</param>
         /// <returns>返回被删除的记录数量。</returns>
         [HttpDelete("batch")]
-        public async Task<IActionResult> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
+        public async Task<ActionResult<ApiResponse<int>>> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
         {
             if (request?.Ids == null || !request.Ids.Any())
             {
@@ -142,7 +142,7 @@ namespace Bedrock.WebApi.Controllers
         ///// <param name="id">App版本 ID。</param>
         ///// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetAsync(long id)
+        //public async Task<ActionResult<ApiResponse<AppVersionDto>>> GetAsync(long id)
         //{
         //    var dto = await _appVersionService.GetAsync(id);
 
@@ -162,7 +162,7 @@ namespace Bedrock.WebApi.Controllers
         ///// <param name="name">App版本名称，用于模糊搜索（可选）。</param>
         ///// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         //[HttpGet("all")]
-        //public async Task<IActionResult> GetAllAsync(
+        //public async Task<ActionResult<ApiResponse<List<AppVersionDto>>>> GetAllAsync(
         //    [FromQuery] string? name = null)
         //{
         //    var dtos = await _appVersionService.GetAllAsync(name);
@@ -181,7 +181,7 @@ namespace Bedrock.WebApi.Controllers
         ///// <param name="orderByType">排序方式（可选）。</param>
         ///// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         //[HttpGet("paged")]
-        //public async Task<IActionResult> GetPagedAsync(
+        //public async Task<ActionResult<ApiResponse<PaginationResult<AppVersionDto>>>> GetPagedAsync(
         //    [FromQuery] int pageNumber = 1,
         //    [FromQuery] int pageSize = 10,
         //    [FromQuery] string? appId = null,
@@ -200,7 +200,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">App版本 ID。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<ActionResult<ApiResponse<AppVersionSummary>>> GetAsync(long id)
         {
             var dto = await _appVersionService.GetSummaryAsync(id);
 
@@ -220,7 +220,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="name">App版本名称，用于模糊搜索（可选）。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync(
+        public async Task<ActionResult<ApiResponse<List<AppVersionSummary>>>> GetAllAsync(
             [FromQuery] string? name = null)
         {
             var dtos = await _appVersionService.GetAllSummaryAsync(name);
@@ -239,7 +239,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="orderByType">排序方式（可选）。</param>
         /// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         [HttpGet("paged")]
-        public async Task<IActionResult> GetPagedAsync(
+        public async Task<ActionResult<ApiResponse<PaginationResult<AppVersionSummary>>>> GetPagedAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? appId = null,
@@ -259,7 +259,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回包含指定记录的 ApiResponse；如果记录不存在，则返回 NotFound。</returns>
         [HttpGet]
         [Route("max-version/{appId}")]
-        public async Task<IActionResult> GetMaxVersion(string appId)
+        public async Task<ActionResult<ApiResponse<AppVersionDto>>> GetMaxVersion(string appId)
         {
             var dto = await _appVersionService.GetMaxVersionAsync(appId);
             //if (dto == null)

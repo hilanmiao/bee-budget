@@ -33,7 +33,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentException">当账本、交易分类已删除时抛出。</exception>
         /// <exception cref="ArgumentNullException">当 createDto 为 null 时抛出。</exception>
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateTransactionDto createDto)
+        public async Task<ActionResult<ApiResponse<TransactionSummary>>> CreateAsync([FromBody] CreateTransactionDto createDto)
         {
             if (createDto == null)
             {
@@ -65,7 +65,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentNullException">当 updateDto 为 null 时抛出。</exception>
         /// <exception cref="InvalidOperationException">当数据库更新未影响任何行时抛出（并发冲突）。</exception>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateTransactionDto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdateAsync(long id, [FromBody] UpdateTransactionDto updateDto)
         {
             if (updateDto == null)
             {
@@ -93,7 +93,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被删除的交易 ID。</returns>
         /// <exception cref="ArgumentException">当记录不存在或已被删除时抛出。</exception>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<ActionResult<ApiResponse<long>>> DeleteAsync(long id)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -114,7 +114,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="request">包含 ID 列表的删除请求。</param>
         /// <returns>返回被删除的记录数量。</returns>
         [HttpDelete("batch")]
-        public async Task<IActionResult> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
+        public async Task<ActionResult<ApiResponse<int>>> DeleteBatchAsync([FromBody] DeleteBatchRequest request)
         {
             if (request?.Ids == null || !request.Ids.Any())
             {
@@ -143,7 +143,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被更新的记录 ID。</returns>
         [HttpPut]
         [Route("change-status/{id}")]
-        public async Task<IActionResult> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
+        public async Task<ActionResult<ApiResponse<long>>> ChangeStatus(long id, [FromBody] ChangeStatusDto changeStatusDto)
         {
             if (changeStatusDto == null)
             {
@@ -169,7 +169,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">交易 ID。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<ActionResult<ApiResponse<TransactionSummary>>> GetAsync(long id)
         {
             var dto = await _transactionService.GetSummaryAsync(id);
 
@@ -194,7 +194,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="description">交易描述，用于模糊搜索（可选）。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync(
+        public async Task<ActionResult<ApiResponse<List<TransactionSummary>>>> GetAllAsync(
             [FromQuery] long ledgerId,
             [FromQuery] long? transactionCategoryId = null,
             [FromQuery] string? status = null,
@@ -230,7 +230,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="orderByType">排序方式（可选）。</param>
         /// <returns>返回分页结果对象，包含数据和分页元信息。</returns>
         [HttpGet("paged")]
-        public async Task<IActionResult> GetPagedAsync(
+        public async Task<ActionResult<ApiResponse<PaginationResult<TransactionSummary>>>> GetPagedAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] long? ledgerId = null,
@@ -261,7 +261,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="ledgerId">要查询的账本Id</param>
         /// <returns>返回账本实时数据快照 Dto，即使未查询到数据也不会返回 null</returns>
         [HttpGet("ledger-snapshot")]
-        public async Task<IActionResult> GetLedgerSnapshotAsync(long ledgerId)
+        public async Task<ActionResult<ApiResponse<LedgerSnapshotDto>>> GetLedgerSnapshotAsync(long ledgerId)
         {
             var dto = await _transactionService.GetLedgerSnapshotAsync(ledgerId);
 
@@ -276,7 +276,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="top">排名前 N 的数量</param>
         /// <returns>按金额降序排列的前 N 笔支出交易的分类 Dto 列表。若无数据返回空列表。</returns>
         [HttpGet("monthly-expense-transaction-category-top-n")]
-        public async Task<IActionResult> GetMonthlyExpenseTransactionCategoryTopNAsync(long ledgerId, int top)
+        public async Task<ActionResult<ApiResponse<List<TransactionCategoryStatDto>>>> GetMonthlyExpenseTransactionCategoryTopNAsync(long ledgerId, int top)
         {
             var dto = await _transactionService.GetMonthlyExpenseTransactionCategoryTopNAsync(ledgerId, top);
 
@@ -291,7 +291,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="top">排名前 N 的数量</param>
         /// <returns>按金额降序排列的前 N 笔收入交易的 Dto 列表。若无数据返回空列表。</returns>
         [HttpGet("monthly-income-transaction-category-top-n")]
-        public async Task<IActionResult> GetMonthlyIncomeTransactionCategoryTopNAsync(long ledgerId, int top)
+        public async Task<ActionResult<ApiResponse<List<TransactionCategoryStatDto>>>> GetMonthlyIncomeTransactionCategoryTopNAsync(long ledgerId, int top)
         {
             var dto = await _transactionService.GetMonthlyIncomeTransactionCategoryTopNAsync(ledgerId, top);
 
@@ -305,7 +305,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="ledgerId">账本Id</param>
         /// <returns>按金额降序排列的本月所有交易的分类 Dto 列表。若无数据返回空列表。</returns>
         [HttpGet("monthly-expense-transaction-category")]
-        public async Task<IActionResult> GetMonthlyExpenseTransactionCategoryAsync(long ledgerId)
+        public async Task<ActionResult<ApiResponse<List<TransactionCategoryStatDto>>>> GetMonthlyExpenseTransactionCategoryAsync(long ledgerId)
         {
             var dto = await _transactionService.GetMonthlyExpenseTransactionCategoryAsync(ledgerId);
 
@@ -320,7 +320,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="top">排名前 N 的数量</param>
         /// <returns>按金额降序排列的前 N 笔交易 Dto 列表。若无数据返回空列表。</returns>
         [HttpGet("monthly-expense-transaction-top-n")]
-        public async Task<IActionResult> GetMonthlyExpenseTransactionTopNAsync(long ledgerId, int top)
+        public async Task<ActionResult<ApiResponse<List<TransactionSummary>>>> GetMonthlyExpenseTransactionTopNAsync(long ledgerId, int top)
         {
             var dto = await _transactionService.GetMonthlyExpenseTransactionTopNAsync(ledgerId, top);
 
@@ -337,7 +337,7 @@ namespace Bedrock.WebApi.Controllers
         /// 注意：未来未开始的月份返回 null，已过去但无交易的月份返回 0。
         /// </returns>
         [HttpGet("yearly-stats")]
-        public async Task<IActionResult> GetYearlyStatsAsync(long ledgerId)
+        public async Task<ActionResult<ApiResponse<List<TransactionMonthlyStatDto>>>> GetYearlyStatsAsync(long ledgerId)
         {
             var dto = await _transactionService.GetYearlyStatsAsync(ledgerId);
 
@@ -353,7 +353,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="endDate">结束日期</param>
         /// <returns>包含总收入和总支出的统计对象</returns>
         [HttpGet("range-stats")]
-        public async Task<IActionResult> GetRangeStatsAsync(long ledgerId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<ApiResponse<TransactionTotalStatDto>>> GetRangeStatsAsync(long ledgerId, DateTime startDate, DateTime endDate)
         {
             var dto = await _transactionService.GetRangeStatsAsync(ledgerId, startDate, endDate);
 
@@ -367,7 +367,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="ledgerId">账本 ID</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("earliest")]
-        public async Task<IActionResult> GetEarliestAsync(long ledgerId)
+        public async Task<ActionResult<ApiResponse<TransactionDto>>> GetEarliestAsync(long ledgerId)
         {
             var dto = await _transactionService.GetEarliestAsync(ledgerId);
 

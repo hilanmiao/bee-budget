@@ -1,5 +1,8 @@
 ﻿namespace Bedrock.Application.DataTransferObjects
 {
+    /// <summary>
+    /// 返回系统角色信息时使用的数据传输对象。
+    /// </summary>
     public class SysRoleDto
     {
         /// <summary>

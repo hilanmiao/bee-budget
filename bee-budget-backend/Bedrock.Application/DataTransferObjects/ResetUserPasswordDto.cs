@@ -5,6 +5,9 @@ namespace Bedrock.Application.DataTransferObjects
     /// </summary>
     public class ResetUserPasswordDto
     {
+        /// <summary>
+        /// 密码。
+        /// </summary>
         public string Password { get; set; } = string.Empty;
     }
 } 

@@ -1,4 +1,4 @@
-using Bedrock.Application.DataTransferObjects;
+﻿using Bedrock.Application.DataTransferObjects;
 using Bedrock.Application.Interfaces;
 using Bedrock.WebApi.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +31,7 @@ namespace Bedrock.WebApi.Controllers
         /// </summary>
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<ApiResponse<SysUserDto>>> Get()
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -55,7 +55,7 @@ namespace Bedrock.WebApi.Controllers
         /// </summary>
         [HttpPut]
         [Route("")]
-        public async Task<IActionResult> Update([FromBody] UpdateSysUserProfileDto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> Update([FromBody] UpdateSysUserProfileDto updateDto)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -78,7 +78,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("password")]
-        public async Task<IActionResult> UpdatePassword([FromBody] ChangeUserProfilePasswordDto changePasswordDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdatePassword([FromBody] ChangeUserProfilePasswordDto changePasswordDto)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -100,7 +100,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回包含文件路径的 ApiResponse。</returns>
         [HttpPost]
         [Route("avatar")]
-        public async Task<IActionResult> UploadAvatar(IFormFile avatarFile)
+        public async Task<ActionResult<ApiResponse<long>>> UploadAvatar(IFormFile avatarFile)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)

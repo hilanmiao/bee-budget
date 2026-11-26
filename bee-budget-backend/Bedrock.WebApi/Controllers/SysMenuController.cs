@@ -1,4 +1,4 @@
-using Bedrock.WebApi.Responses;
+﻿using Bedrock.WebApi.Responses;
 using Bedrock.Application.DataTransferObjects;
 using Bedrock.Application.Interfaces;
 using Bedrock.Application.ValueObjects;
@@ -34,7 +34,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentException">当 Name 已存在时抛出。</exception>
         /// <exception cref="ArgumentNullException">当 createDto 为 null 时抛出。</exception>
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateSysMenuDto createDto)
+        public async Task<ActionResult<ApiResponse<SysMenuDto>>> CreateAsync([FromBody] CreateSysMenuDto createDto)
         {
             if (createDto == null)
             {
@@ -66,7 +66,7 @@ namespace Bedrock.WebApi.Controllers
         /// <exception cref="ArgumentNullException">当 updateDto 为 null 时抛出。</exception>
         /// <exception cref="InvalidOperationException">当数据库更新未影响任何行时抛出（并发冲突）。</exception>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateSysMenuDto updateDto)
+        public async Task<ActionResult<ApiResponse<long>>> UpdateAsync(long id, [FromBody] UpdateSysMenuDto updateDto)
         {
             if (updateDto == null)
             {
@@ -94,7 +94,7 @@ namespace Bedrock.WebApi.Controllers
         /// <returns>返回被删除的菜单 ID。</returns>
         /// <exception cref="ArgumentException">当记录不存在或已被删除时抛出。</exception>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<ActionResult<ApiResponse<long>>> DeleteAsync(long id)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -115,7 +115,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="id">菜单 ID。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<ActionResult<ApiResponse<SysMenuDto>>> GetAsync(long id)
         {
             var dto = await _sysMenuService.GetAsync(id);
 
@@ -136,7 +136,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="status">菜单状态，用于精确匹配（可选）。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync(
+        public async Task<ActionResult<ApiResponse<List<SysMenuDto>>>> GetAllAsync(
             [FromQuery] string? name = null,
             [FromQuery] string? status = null)
         {
@@ -152,7 +152,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="name">菜单的唯一名称（如 用户管理），用于精确匹配。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("by-name/{name}")]
-        public async Task<IActionResult> GetByNameAsync(string name)
+        public async Task<ActionResult<ApiResponse<SysMenuDto>>> GetByNameAsync(string name)
         {
             var dto = await _sysMenuService.GetByNameAsync(name);
 
@@ -172,7 +172,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="userId">用户 ID。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("tree-select-data/by-user-id/{userId}")]
-        public async Task<IActionResult> GetTreeSelectDataByUserId(long userId)
+        public async Task<ActionResult<ApiResponse<List<TreeSelectDto>>>> GetTreeSelectDataByUserId(long userId)
         {
             var dtos = await _sysMenuService.GetTreeSelectDataByUserId(userId);
             var responseGet = ApiResponse<List<TreeSelectDto>>.OperationSuccess(dtos);
@@ -186,7 +186,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="roleId">角色 ID。</param>
         /// <returns>返回匹配的 DTO；若未找到或已删除，则返回 null。</returns>
         [HttpGet("tree-select-data/by-role-id/{roleId}")]
-        public async Task<IActionResult> GetTreeSelectDataByRoleId(long roleId)
+        public async Task<ActionResult<ApiResponse<RoleMenuTreeSelectDto>>> GetTreeSelectDataByRoleId(long roleId)
         {
             var dto = await _sysMenuService.GetTreeSelectDataByRoleId(roleId);
 
@@ -207,7 +207,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="userId">用户 ID。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("router-data/by-user-id/{userId}")]
-        public async Task<IActionResult> GetRouterDataByUserId(long userId)
+        public async Task<ActionResult<ApiResponse<List<RouterVO>>>> GetRouterDataByUserId(long userId)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
