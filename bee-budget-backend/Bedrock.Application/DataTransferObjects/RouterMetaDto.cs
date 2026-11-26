@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bedrock.Application.ValueObjects
+namespace Bedrock.Application.DataTransferObjects
 {
     /// <summary>
-    /// 路由元信息值对象（VO），描述路由在侧边栏和面包屑中的展示方式。
+    /// 路由元信息数据传输对象，描述路由在侧边栏和面包屑中的展示方式。
     /// </summary>
-    public class MetaVO
+    public class RouterMetaDto
     {
         /// <summary>
         /// 路由在侧边栏和面包屑中展示的名称。
@@ -36,7 +36,7 @@ namespace Bedrock.Application.ValueObjects
         /// </summary>
         /// <param name="title">路由展示名称。</param>
         /// <param name="icon">图标路径。</param>
-        public MetaVO(string title, string? icon)
+        public RouterMetaDto(string title, string? icon)
         {
             this.Title = title;
             this.Icon = icon;
@@ -48,7 +48,7 @@ namespace Bedrock.Application.ValueObjects
         /// <param name="title">路由展示名称。</param>
         /// <param name="icon">图标路径。</param>
         /// <param name="noCache">是否禁用 keep-alive 缓存。</param>
-        public MetaVO(string title, string? icon, bool noCache)
+        public RouterMetaDto(string title, string? icon, bool noCache)
         {
             this.Title = title;
             this.Icon = icon;
@@ -61,7 +61,7 @@ namespace Bedrock.Application.ValueObjects
         /// <param name="title">路由展示名称。</param>
         /// <param name="icon">图标路径。</param>
         /// <param name="link">内链地址，仅当以 http 开头时生效。</param>
-        public MetaVO(string title, string? icon, string? link)
+        public RouterMetaDto(string title, string? icon, string? link)
         {
             this.Title = title;
             this.Icon = icon;
@@ -75,7 +75,7 @@ namespace Bedrock.Application.ValueObjects
         /// <param name="icon">图标路径。</param>
         /// <param name="noCache">是否禁用 keep-alive 缓存。</param>
         /// <param name="link">内链地址，仅当以 http 开头时生效。</param>
-        public MetaVO(string title, string? icon, bool noCache, string? link)
+        public RouterMetaDto(string title, string? icon, bool noCache, string? link)
         {
             this.Title = title;
             this.Icon = icon;

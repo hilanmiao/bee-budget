@@ -1,5 +1,5 @@
 ﻿using Bedrock.Application.Interfaces;
-using Bedrock.Application.ValueObjects;
+using Bedrock.Application.DataTransferObjects;
 using Bedrock.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -227,7 +227,7 @@ namespace Bedrock.Application.Services
         /// <returns>成功清理的会话数量。</returns>
         /// <remarks>
         /// <para>1. 从 Set <c>{InstanceName}:{userId}:userSessions</c> 获取所有会话 ID。</para>
-        /// <para>2. 批量读取会话数据（格式为 <see cref="SessionInfoVO"/>）。</para>
+        /// <para>2. 批量读取会话数据（格式为 <see cref="SessionInfoDto"/>）。</para>
         /// <para>3. 若数据损坏（JSON 反序列化失败）或已过期（<c>ExpiresAt ≤ UtcNow</c>），则删除会话键并从 Set 中移除 ID。</para>
         /// <para>4. 若 Set 中存在无对应键的“残留 ID”，也一并清理（防御性编程）。</para>
         /// <para>5. 操作以批次（最大 50）提交，减少 Redis 命令往返次数。</para>
@@ -254,10 +254,10 @@ namespace Bedrock.Application.Services
 
                 if (!redisValue.IsNullOrEmpty)
                 {
-                    SessionInfoVO? sessionInfo = null;
+                    SessionInfoDto? sessionInfo = null;
                     try
                     {
-                        sessionInfo = JsonSerializer.Deserialize<SessionInfoVO>(redisValue.ToString());
+                        sessionInfo = JsonSerializer.Deserialize<SessionInfoDto>(redisValue.ToString());
                     }
                     catch (JsonException ex)
                     {
@@ -308,7 +308,7 @@ namespace Bedrock.Application.Services
         /// <param name="userId">目标用户唯一标识。</param>
         /// <returns>成功清理的刷新令牌数量。</returns>
         /// <remarks>
-        /// 逻辑与会话清理高度对称，数据结构为 <see cref="RefreshTokenMetaVO"/>。
+        /// 逻辑与会话清理高度对称，数据结构为 <see cref="RefreshTokenMetaDto"/>。
         /// 同样处理反序列化失败、过期、残留 ID 三种情况。
         /// </remarks>
         private async Task<int> CleanupExpiredRefreshTokensForUserAsync(IDatabase redisDb, long userId)
@@ -333,10 +333,10 @@ namespace Bedrock.Application.Services
 
                 if (!redisValue.IsNullOrEmpty)
                 {
-                    RefreshTokenMetaVO? refreshTokenMeta = null;
+                    RefreshTokenMetaDto? refreshTokenMeta = null;
                     try
                     {
-                        refreshTokenMeta = JsonSerializer.Deserialize<RefreshTokenMetaVO>(redisValue.ToString());
+                        refreshTokenMeta = JsonSerializer.Deserialize<RefreshTokenMetaDto>(redisValue.ToString());
                     }
                     catch (JsonException ex)
                     {

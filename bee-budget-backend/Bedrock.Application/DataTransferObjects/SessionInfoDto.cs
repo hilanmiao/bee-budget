@@ -1,10 +1,10 @@
-﻿namespace Bedrock.Application.ValueObjects
+﻿namespace Bedrock.Application.DataTransferObjects
 {
     /// <summary>
-    /// 用户登录会话信息值对象（VO）
+    /// 用户登录会话信息数据传输对象
     /// 描述一个活跃的登录会话，包含 AccessToken、生命周期、设备/IP 等信息
     /// </summary>
-    public class SessionInfoVO
+    public class SessionInfoDto
     {
         /// <summary>
         /// 用户唯一标识

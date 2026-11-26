@@ -1,5 +1,5 @@
 ﻿using Bedrock.Application.Interfaces;
-using Bedrock.Application.ValueObjects;
+using Bedrock.Application.DataTransferObjects;
 using Bedrock.Configuration;
 using Bedrock.Application.Services;
 using Microsoft.Extensions.Logging;
@@ -10,11 +10,11 @@ using System.Text.Json;
 namespace Bedrock.Infrastructure.Repositories
 {
     /// <summary>
-    /// 🚀 基于 Redis 的认证令牌存储与管理仓库（适配 SessionInfoVO / RefreshTokenMetaVO）
+    /// 🚀 基于 Redis 的认证令牌存储与管理仓库（适配 SessionInfoDto / RefreshTokenMetaDto）
     /// 负责访问令牌（AccessToken）与刷新令牌（RefreshToken）的持久化、验证、清理与撤销。
     /// 
     /// 🌟 核心能力升级：
-    /// - ✅ 使用 Redis 存储 AccessToken 会话信息（SessionInfoVO）和 RefreshToken 元数据（RefreshTokenMetaVO）
+    /// - ✅ 使用 Redis 存储 AccessToken 会话信息（SessionInfoDto）和 RefreshToken 元数据（RefreshTokenMetaDto）
     /// - ✅ 支持 AccessToken 有效性验证 + 惰性清理过期会话（性能优化）
     /// - ✅ 支持 RefreshToken 验证（返回完整元数据）与安全撤销
     /// - ✅ 支持按用户批量撤销所有活跃令牌（登出/风控）
@@ -23,7 +23,7 @@ namespace Bedrock.Infrastructure.Repositories
     /// 
     /// 🔐 安全设计：
     /// - 所有 Key 使用命名空间隔离：{InstanceName}:{UserId}:xxx，避免多租户/环境冲突
-    /// - refreshToken 不直接暴露 userId，而是封装在 RefreshTokenMetaVO 中，增强安全性
+    /// - refreshToken 不直接暴露 userId，而是封装在 RefreshTokenMetaDto 中，增强安全性
     /// - 支持设备/IP/UserAgent 记录，便于“我的设备”管理和异地登录告警
     /// 
     /// ⚡ 性能优化：
@@ -37,9 +37,9 @@ namespace Bedrock.Infrastructure.Repositories
     /// - 不负责 JWT 签发、用户登录、权限校验 —— 专注存储与验证，符合单一职责
     /// 
     /// 📌 Redis Key 设计规范：
-    /// - AccessToken 会话：{InstanceName}:{UserId}:sessions:{SessionId} → 存储 SessionInfoVO
+    /// - AccessToken 会话：{InstanceName}:{UserId}:sessions:{SessionId} → 存储 SessionInfoDto
     /// - 用户会话集合：{InstanceName}:{UserId}:userSessions → Set of SessionId
-    /// - RefreshToken 元数据：{InstanceName}:{userId}:refreshTokens:{RefreshTokenId} → 存储 RefreshTokenMetaVO
+    /// - RefreshToken 元数据：{InstanceName}:{userId}:refreshTokens:{RefreshTokenId} → 存储 RefreshTokenMetaDto
     /// - 用户 refreshToken 集合：{InstanceName}:{UserId}:userRefreshTokens → Set of RefreshTokenId (字符串)
     /// </summary>
     public class AuthRepository : IAuthRepository
@@ -106,7 +106,7 @@ namespace Bedrock.Infrastructure.Repositories
                 if (!redisValue.IsNullOrEmpty)
                 {
                     var sessionInfoString = redisValue.ToString();
-                    var sessionInfo = JsonSerializer.Deserialize<SessionInfoVO>(sessionInfoString); // ✅ 使用新 VO
+                    var sessionInfo = JsonSerializer.Deserialize<SessionInfoDto>(sessionInfoString); // ✅ 使用新 DTO
 
                     // ✅ 情况1：当前会话有效且 AccessToken 匹配 → 标记为有效（不立即返回，先完成清理）
                     if (sessionInfo != null &&
@@ -142,7 +142,7 @@ namespace Bedrock.Infrastructure.Repositories
                 if (!redisValue.IsNullOrEmpty)
                 {
                     var refreshTokenString = redisValue.ToString();
-                    var refreshTokenMeta = JsonSerializer.Deserialize<RefreshTokenMetaVO>(refreshTokenString); // ✅ 使用新 VO
+                    var refreshTokenMeta = JsonSerializer.Deserialize<RefreshTokenMetaDto>(refreshTokenString); // ✅ 使用新 DTO
 
                     // 🧹 情况2：refreshToken已过期 或 反序列化失败 → 触发惰性清理
                     if (refreshTokenMeta == null || DateTime.UtcNow >= refreshTokenMeta.ExpiresAt)
@@ -182,7 +182,7 @@ namespace Bedrock.Infrastructure.Repositories
         }
 
         /// <summary>
-        /// 🔄 验证刷新令牌（RefreshToken）的有效性，并返回其完整元数据（RefreshTokenMetaVO）。
+        /// 🔄 验证刷新令牌（RefreshToken）的有效性，并返回其完整元数据（RefreshTokenMetaDto）。
         /// 
         /// 🆕 升级点：不再只返回 userId，而是返回完整元数据（设备/IP/创建时间等），便于安全审计和设备管理。
         /// ⏳ 自动过期：依赖 Redis Key TTL，无需手动检查 ExpiresAt。
@@ -191,8 +191,8 @@ namespace Bedrock.Infrastructure.Repositories
         /// </summary>
         /// <param name="userId">用户唯一标识（long 类型）。</param>
         /// <param name="refreshTokenId">待验证的刷新令牌的唯一标识。</param>
-        /// <returns>若令牌有效，返回 RefreshTokenMetaVO；否则返回 null。</returns>
-        public async Task<RefreshTokenMetaVO?> ValidateRefreshTokenAsync(long userId, string refreshTokenId)
+        /// <returns>若令牌有效，返回 RefreshTokenMetaDto；否则返回 null。</returns>
+        public async Task<RefreshTokenMetaDto?> ValidateRefreshTokenAsync(long userId, string refreshTokenId)
         {
             if (string.IsNullOrWhiteSpace(refreshTokenId)) return null;
 
@@ -205,7 +205,7 @@ namespace Bedrock.Infrastructure.Repositories
             }
             string jsonString = redisValue.ToString();
 
-            return JsonSerializer.Deserialize<RefreshTokenMetaVO>(jsonString); // ✅ 返回完整元数据
+            return JsonSerializer.Deserialize<RefreshTokenMetaDto>(jsonString); // ✅ 返回完整元数据
         }
 
         /// <summary>
@@ -292,11 +292,11 @@ namespace Bedrock.Infrastructure.Repositories
 
         /// <summary>
         /// 🆕 创建或更新用户的访问令牌（AccessToken）和刷新令牌（RefreshToken）。
-        /// 同时持久化 SessionInfoVO 和 RefreshTokenMetaVO 到 Redis。
+        /// 同时持久化 SessionInfoDto 和 RefreshTokenMetaDto 到 Redis。
         /// 
         /// 🔄 存储结构：
-        /// - AccessToken 会话 → SessionInfoVO → Key: {InstanceName}:{UserId}:sessions:{SessionId}
-        /// - RefreshToken 元数据 → RefreshTokenMetaVO → Key: {InstanceName}:refreshTokens:{RefreshTokenId}
+        /// - AccessToken 会话 → SessionInfoDto → Key: {InstanceName}:{UserId}:sessions:{SessionId}
+        /// - RefreshToken 元数据 → RefreshTokenMetaDto → Key: {InstanceName}:refreshTokens:{RefreshTokenId}
         /// - 用户会话集合 → Set Add SessionId
         /// - 用户 refreshToken 集合 → Set Add RefreshTokenId
         /// 
@@ -309,7 +309,7 @@ namespace Bedrock.Infrastructure.Repositories
         /// <param name="loginTime">登录/令牌创建时间（UTC）。</param>
         /// <param name="expiresAt">访问令牌过期时间（UTC）。</param>
         /// <param name="refreshTokenExpiresAt">刷新令牌过期时间（UTC）。</param>
-        /// <param name="clientInfoVO">客户端信息（Device, IpAddress, UserAgent）。</param>
+        /// <param name="clientInfoDto">客户端信息（Device, IpAddress, UserAgent）。</param>
         public async Task UpdateTokenAsync(
             long userId,
             string newAccessToken,
@@ -317,14 +317,14 @@ namespace Bedrock.Infrastructure.Repositories
             DateTime loginTime,
             DateTime expiresAt,
             DateTime refreshTokenExpiresAt,
-            ClientInfoVO clientInfoVO)
+            ClientInfoDto clientInfoDto)
         {
             if (string.IsNullOrWhiteSpace(newAccessToken) || string.IsNullOrWhiteSpace(newRefreshTokenId))
                 throw new ArgumentException("AccessToken 和 RefreshTokenID 不能为空");
 
-            // ✅ 创建并序列化 SessionInfoVO（访问令牌会话信息）
+            // ✅ 创建并序列化 SessionInfoDto（访问令牌会话信息）
             var sessionId = Guid.NewGuid().ToString(); // 生成唯一会话 ID
-            var sessionInfo = new SessionInfoVO
+            var sessionInfo = new SessionInfoDto
             {
                 UserId = userId,
                 AccessToken = newAccessToken,
@@ -332,9 +332,9 @@ namespace Bedrock.Infrastructure.Repositories
                 ExpiresAt = expiresAt,
                 SessionId = sessionId,
                 // 📌 扩展点：可在 Controller 中补充 Device, IpAddress, UserAgent
-                Device = clientInfoVO.Device,
-                IpAddress = clientInfoVO.IpAddress,
-                UserAgent = clientInfoVO.UserAgent,
+                Device = clientInfoDto.Device,
+                IpAddress = clientInfoDto.IpAddress,
+                UserAgent = clientInfoDto.UserAgent,
                 RefreshTokenId = newRefreshTokenId
             };
             var serializedSessionInfo = JsonSerializer.Serialize(sessionInfo);
@@ -346,17 +346,17 @@ namespace Bedrock.Infrastructure.Repositories
             var sessionsSetKey = $"{_instanceName}:{userId}:userSessions";
             await _redisDb.SetAddAsync(sessionsSetKey, sessionId);
 
-            // ✅ 创建并序列化 RefreshTokenMetaVO（刷新令牌元数据）
-            var refreshTokenMetadata = new RefreshTokenMetaVO
+            // ✅ 创建并序列化 RefreshTokenMetaDto（刷新令牌元数据）
+            var refreshTokenMetadata = new RefreshTokenMetaDto
             {
                 UserId = userId,
                 CreatedAt = loginTime,
                 ExpiresAt = refreshTokenExpiresAt,
                 // 📌 扩展点：可在 Controller 中补充 Device, IpAddress, UserAgent, LastUsedAt
                 LastUsedAt = loginTime,
-                Device = clientInfoVO.Device,
-                IpAddress = clientInfoVO.IpAddress,
-                UserAgent = clientInfoVO.UserAgent,
+                Device = clientInfoDto.Device,
+                IpAddress = clientInfoDto.IpAddress,
+                UserAgent = clientInfoDto.UserAgent,
                 SessionId = sessionId
             };
             var serializedRefreshTokenMetadata = JsonSerializer.Serialize(refreshTokenMetadata);

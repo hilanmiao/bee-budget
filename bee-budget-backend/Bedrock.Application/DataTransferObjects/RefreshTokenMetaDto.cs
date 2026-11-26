@@ -1,10 +1,10 @@
-﻿namespace Bedrock.Application.ValueObjects
+﻿namespace Bedrock.Application.DataTransferObjects
 {
     /// <summary>
-    /// RefreshToken 的元数据值对象（VO）
+    /// RefreshToken 的元数据数据传输对象
     /// 用于存储 refreshToken 的上下文信息，如设备、IP、时间等，便于审计、风控、设备管理
     /// </summary>
-    public class RefreshTokenMetaVO
+    public class RefreshTokenMetaDto
     {
         /// <summary>
         /// 关联的用户 ID

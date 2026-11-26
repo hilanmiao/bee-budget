@@ -6,14 +6,13 @@ using System.Net.Sockets;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-using Bedrock.Application.ValueObjects;
-using Bedrock.Application.Interfaces;
 using Bedrock.Application.DataTransferObjects;
+using Bedrock.Application.Interfaces;
 
 namespace Bedrock.Application.Services
 {
     /// <summary>
-    /// 🚀 认证服务核心实现（适配 RefreshTokenMetadataVO）
+    /// 🚀 认证服务核心实现（适配 RefreshTokenMetaDto）
     /// 提供用户登录、JWT令牌签发、刷新、撤销、强制登出、权限获取等完整认证生命周期管理。
     /// 
     /// 🌟 核心能力：
@@ -100,9 +99,9 @@ namespace Bedrock.Application.Services
         /// - 验证码错误应独立提示，避免与密码错误混淆
         /// </summary>
         /// <param name="loginDto">登录请求数据（含用户名、密码、验证码）</param>
-        /// <param name="clientInfoVO">客户端信息（含设备、IP、UserAgent）</param>
+        /// <param name="clientInfoDto">客户端信息（含设备、IP、UserAgent）</param>
         /// <returns>包含 AccessToken、RefreshToken、ExpiresAt 的响应对象</returns>
-        public async Task<LoginResponseDto> AuthenticateAsync(LoginDto loginDto, ClientInfoVO clientInfoVO)
+        public async Task<LoginResponseDto> AuthenticateAsync(LoginDto loginDto, ClientInfoDto clientInfoDto)
         {
             // 🔍 参数校验前置
             if (string.IsNullOrWhiteSpace(loginDto.Username) || string.IsNullOrWhiteSpace(loginDto.Password))
@@ -139,7 +138,7 @@ namespace Bedrock.Application.Services
                 loginTime,
                 accessTokenExpiresAt,
                 refreshTokenExpiresAt,
-                clientInfoVO);
+                clientInfoDto);
 
             return new LoginResponseDto
             {
@@ -166,9 +165,9 @@ namespace Bedrock.Application.Services
         /// </summary>
         /// <param name="userId">用户唯一标识（long 类型）。</param>
         /// <param name="refreshTokenId">客户端提供的刷新令牌的唯一标识</param>
-        /// <param name="clientInfoVO">客户端信息（含设备、IP、UserAgent）</param>
+        /// <param name="clientInfoDto">客户端信息（含设备、IP、UserAgent）</param>
         /// <returns>包含新 AccessToken、新 RefreshTokenId、新 ExpiresAt 的响应对象</returns>
-        public async Task<LoginResponseDto> RefreshTokenAsync(long userId, string refreshTokenId, ClientInfoVO clientInfoVO)
+        public async Task<LoginResponseDto> RefreshTokenAsync(long userId, string refreshTokenId, ClientInfoDto clientInfoDto)
         {
             if (string.IsNullOrWhiteSpace(refreshTokenId))
                 throw new ArgumentException("刷新令牌唯一标识不能为空。");
@@ -180,11 +179,11 @@ namespace Bedrock.Application.Services
 
             // 🛡️ 设备/IP/UserAgent 绑定校验（防异地/异设备盗用）
             // 举例：拿到了浏览器localstorage中的userId和refreshtokenId，然后使用apifox模拟请求，会拿到新的accessToken和refreshTokenId，就可以直接带入模拟请求其他接口了
-            //var isIpMatch = IsSameIpSegment(refreshTokenMetadata.IpAddress, clientInfoVO.IpAddress); // 有个问题，刚开始用wifi，后面切换为移动网络，ip地址会变，所以不能用ip地址来判断
-            var isUaCoreMatch = ExtractBrowserCore(refreshTokenMetadata.UserAgent ?? "") == ExtractBrowserCore(clientInfoVO.UserAgent ?? "");
+            //var isIpMatch = IsSameIpSegment(refreshTokenMetadata.IpAddress, clientInfoDto.IpAddress); // 有个问题，刚开始用wifi，后面切换为移动网络，ip地址会变，所以不能用ip地址来判断
+            var isUaCoreMatch = ExtractBrowserCore(refreshTokenMetadata.UserAgent ?? "") == ExtractBrowserCore(clientInfoDto.UserAgent ?? "");
 
-            //if (refreshTokenMetadata.Device != clientInfoVO.Device || !isIpMatch || !isUaCoreMatch)
-            if (refreshTokenMetadata.Device != clientInfoVO.Device || !isUaCoreMatch)
+            //if (refreshTokenMetadata.Device != clientInfoDto.Device || !isIpMatch || !isUaCoreMatch)
+            if (refreshTokenMetadata.Device != clientInfoDto.Device || !isUaCoreMatch)
             {
                 throw new SecurityTokenException("检测到登录环境变更，为保障账户安全，请重新登录。");
             }
@@ -220,7 +219,7 @@ namespace Bedrock.Application.Services
                 loginTime,
                 accessTokenExpiresAt,
                 refreshTokenExpiresAt,
-                clientInfoVO);
+                clientInfoDto);
 
             return new LoginResponseDto
             {
@@ -326,8 +325,8 @@ namespace Bedrock.Application.Services
                     new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                     // 可扩展
                     // new Claim(ClaimTypes.Name, "username"),
-                    // new Claim("Device", clientInfoVO.Device),
-                    // new Claim("IpAddress", clientInfoVO.IpAddress)
+                    // new Claim("Device", clientInfoDto.Device),
+                    // new Claim("IpAddress", clientInfoDto.IpAddress)
                 }),
                 Expires = expiresAt,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

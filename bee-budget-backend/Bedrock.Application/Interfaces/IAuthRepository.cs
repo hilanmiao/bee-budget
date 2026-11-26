@@ -1,11 +1,11 @@
-﻿using Bedrock.Application.ValueObjects;
+﻿using Bedrock.Application.DataTransferObjects;
 using System;
 using System.Threading.Tasks;
 
 namespace Bedrock.Application.Interfaces
 {
     /// <summary>
-    /// 🚀 认证令牌管理仓储接口（适配 SessionInfoVO / RefreshTokenMetadataVO）
+    /// 🚀 认证令牌管理仓储接口（适配 SessionInfoDto / RefreshTokenMetaDto）
     /// 定义访问令牌（AccessToken）与刷新令牌（RefreshToken）的持久化、验证、清理与撤销契约。
     /// 
     /// 🌟 核心能力：
@@ -17,7 +17,7 @@ namespace Bedrock.Application.Interfaces
     /// 
     /// 🔐 安全设计契约：
     /// - 所有操作必须隔离用户数据（通过 UserId 隔离）
-    /// - refreshToken 不暴露 userId 于外部，而是封装在 RefreshTokenMetadataVO 中
+    /// - refreshToken 不暴露 userId 于外部，而是封装在 RefreshTokenMetaDto 中
     /// - 支持设备/IP/UserAgent 扩展字段，便于“我的设备”管理
     /// 
     /// ⚡ 性能契约：
@@ -31,9 +31,9 @@ namespace Bedrock.Application.Interfaces
     /// - 命名空间隔离：实现层必须使用 {InstanceName} 避免多环境冲突
     /// 
     /// 📌 Redis Key 设计建议（供实现层参考）：
-    /// - AccessToken 会话：{InstanceName}:{UserId}:loginSessions:{SessionId} → SessionInfoVO
+    /// - AccessToken 会话：{InstanceName}:{UserId}:loginSessions:{SessionId} → SessionInfoDto
     /// - 用户会话集合：{InstanceName}:{UserId}:userSessions → Set of SessionId
-    /// - RefreshToken 元数据：{InstanceName}:refreshToken:{RefreshToken} → RefreshTokenMetadataVO
+    /// - RefreshToken 元数据：{InstanceName}:refreshToken:{RefreshToken} → RefreshTokenMetaDto
     /// - 用户 refreshToken 集合：{InstanceName}:{UserId}:refreshTokens → Set of RefreshToken (字符串)
     /// </summary>
     public interface IAuthRepository
@@ -53,7 +53,7 @@ namespace Bedrock.Application.Interfaces
         Task<bool> ValidateAccessTokenAsync(long userId, string accessToken);
 
         /// <summary>
-        /// 🔄 验证刷新令牌（RefreshToken）的有效性，并返回其完整元数据（RefreshTokenMetadataVO）。
+        /// 🔄 验证刷新令牌（RefreshToken）的有效性，并返回其完整元数据（RefreshTokenMetaDto）。
         /// 
         /// 🆕 升级点：不再只返回 userId，而是返回完整元数据（设备/IP/创建时间等），便于安全审计和设备管理。
         /// ⏳ 自动过期：依赖实现层的 TTL 机制，无需手动检查 ExpiresAt。
@@ -62,8 +62,8 @@ namespace Bedrock.Application.Interfaces
         /// </summary>
         /// <param name="userId">用户唯一标识（long 类型）。</param>
         /// <param name="refreshTokenId">待验证的刷新令牌的唯一标识。</param>
-        /// <returns>若令牌有效，返回 RefreshTokenMetadataVO；否则返回 null。</returns>
-        Task<RefreshTokenMetaVO?> ValidateRefreshTokenAsync(long userId, string refreshTokenId); // ✅ 返回值升级！
+        /// <returns>若令牌有效，返回 RefreshTokenMetaDto；否则返回 null。</returns>
+        Task<RefreshTokenMetaDto?> ValidateRefreshTokenAsync(long userId, string refreshTokenId); // ✅ 返回值升级！
 
         /// <summary>
         /// 🗑️ 撤销指定的刷新令牌（RefreshToken）。
@@ -97,11 +97,11 @@ namespace Bedrock.Application.Interfaces
 
         /// <summary>
         /// 🆕 创建或更新用户的访问令牌（AccessToken）和刷新令牌（RefreshToken）。
-        /// 同时持久化 SessionInfoVO 和 RefreshTokenMetadataVO。
+        /// 同时持久化 SessionInfoDto 和 RefreshTokenMetaDto。
         /// 
         /// 🔄 存储结构契约：
-        /// - AccessToken 会话 → SessionInfoVO → Key: {InstanceName}:{UserId}:loginSessions:{SessionId}
-        /// - RefreshToken 元数据 → RefreshTokenMetadataVO → Key: {InstanceName}:refreshToken:{RefreshToken}
+        /// - AccessToken 会话 → SessionInfoDto → Key: {InstanceName}:{UserId}:loginSessions:{SessionId}
+        /// - RefreshToken 元数据 → RefreshTokenMetaDto → Key: {InstanceName}:refreshToken:{RefreshToken}
         /// - 用户会话集合 → Set Add SessionId
         /// - 用户 refreshToken 集合 → Set Add RefreshToken
         /// 
@@ -114,7 +114,7 @@ namespace Bedrock.Application.Interfaces
         /// <param name="loginTime">登录/令牌创建时间（UTC）。</param>
         /// <param name="expiresAt">访问令牌过期时间（UTC）。</param>
         /// <param name="refreshTokenExpiresAt">刷新令牌过期时间（UTC）。</param>
-        /// <param name="clientInfoVO">客户端信息（Device / IpAddress / UserAgent）。</param>
+        /// <param name="clientInfoDto">客户端信息（Device / IpAddress / UserAgent）。</param>
         Task UpdateTokenAsync(
             long userId,
             string newAccessToken,
@@ -122,6 +122,6 @@ namespace Bedrock.Application.Interfaces
             DateTime loginTime,
             DateTime expiresAt,
             DateTime refreshTokenExpiresAt,
-            ClientInfoVO clientInfoVO);
+            ClientInfoDto clientInfoDto);
     }
 }

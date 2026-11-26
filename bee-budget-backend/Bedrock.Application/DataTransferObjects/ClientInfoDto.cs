@@ -1,10 +1,10 @@
-﻿namespace Bedrock.Application.ValueObjects
+﻿namespace Bedrock.Application.DataTransferObjects
 {
     /// <summary>
-    /// 客户端信息值对象（VO）
+    /// 客户端信息数据传输对象
     /// 设备/IP 等信息
     /// </summary>
-    public class ClientInfoVO
+    public class ClientInfoDto
     {
         /// <summary>
         /// 登录设备标识（如 "Mac Safari", "Android App v2.1"）

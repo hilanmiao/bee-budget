@@ -1,7 +1,6 @@
 ﻿using Bedrock.WebApi.Responses;
 using Bedrock.Application.DataTransferObjects;
 using Bedrock.Application.Interfaces;
-using Bedrock.Application.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -40,9 +39,9 @@ namespace Bedrock.WebApi.Controllers
         public async Task<ActionResult<ApiResponse<LoginResponseDto>>> Login([FromBody] LoginDto loginDto)
         {
             // 提取客户端信息
-            var clientInfoVO = GetCurrentClientInfo();
+            var clientInfoDto = GetCurrentClientInfo();
 
-            var loginResponseDto = await _authService.AuthenticateAsync(loginDto, clientInfoVO);
+            var loginResponseDto = await _authService.AuthenticateAsync(loginDto, clientInfoDto);
             var response = ApiResponse<LoginResponseDto>.OperationSuccess(loginResponseDto);
 
             return Ok(response);
@@ -60,9 +59,9 @@ namespace Bedrock.WebApi.Controllers
         public async Task<ActionResult<ApiResponse<LoginResponseDto>>> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
         {
             // 提取客户端信息
-            var clientInfoVO = GetCurrentClientInfo();
+            var clientInfoDto = GetCurrentClientInfo();
 
-            var loginResponseDto = await _authService.RefreshTokenAsync(refreshTokenDto.UserId, refreshTokenDto.RefreshTokenId, clientInfoVO);
+            var loginResponseDto = await _authService.RefreshTokenAsync(refreshTokenDto.UserId, refreshTokenDto.RefreshTokenId, clientInfoDto);
             var responseRefresh = ApiResponse<LoginResponseDto>.OperationSuccess(loginResponseDto);
 
             return Ok(responseRefresh);
@@ -155,18 +154,18 @@ namespace Bedrock.WebApi.Controllers
         /// <summary>
         /// 从当前 HTTP 请求上下文中提取客户端信息，包括 User-Agent、IP 地址和设备类型。
         /// </summary>
-        /// <returns>包含客户端 User-Agent、IP 地址和设备类型的 <see cref="ClientInfoVO"/> 对象。</returns>
+        /// <returns>包含客户端 User-Agent、IP 地址和设备类型的 <see cref="ClientInfoDto"/> 对象。</returns>
         /// <remarks>
         /// 此方法应在 Controller 层调用，避免在 Service 层直接依赖 HttpContext。
         /// 提取的信息可用于会话管理、安全审计或“我的设备”功能。
         /// </remarks>
-        private ClientInfoVO GetCurrentClientInfo()
+        private ClientInfoDto GetCurrentClientInfo()
         {
             var userAgent = HttpContext.Request.Headers["User-Agent"].ToString();
             var ipAddress = GetClientIpAddress();
             var device = ParseDeviceFromUserAgent(userAgent);
 
-            return new ClientInfoVO
+            return new ClientInfoDto
             {
                 UserAgent = userAgent,
                 IpAddress = ipAddress,

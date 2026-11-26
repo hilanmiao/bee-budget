@@ -1,7 +1,6 @@
 ﻿using Bedrock.WebApi.Responses;
 using Bedrock.Application.DataTransferObjects;
 using Bedrock.Application.Interfaces;
-using Bedrock.Application.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -207,7 +206,7 @@ namespace Bedrock.WebApi.Controllers
         /// <param name="userId">用户 ID。</param>
         /// <returns>返回匹配条件的 DTO 列表（可能为空）。</returns>
         [HttpGet("router-data/by-user-id/{userId}")]
-        public async Task<ActionResult<ApiResponse<List<RouterVO>>>> GetRouterDataByUserId(long userId)
+        public async Task<ActionResult<ApiResponse<List<RouterDto>>>> GetRouterDataByUserId(long userId)
         {
             var currentUser = GetCurrentUser();
             if (currentUser == null)
@@ -217,7 +216,7 @@ namespace Bedrock.WebApi.Controllers
             }
 
             var dtos = await _sysMenuService.GetRouterDataByUserId(currentUser.Id);
-            var responseGet = ApiResponse<List<RouterVO>>.OperationSuccess(dtos);
+            var responseGet = ApiResponse<List<RouterDto>>.OperationSuccess(dtos);
 
             return Ok(responseGet);
         }

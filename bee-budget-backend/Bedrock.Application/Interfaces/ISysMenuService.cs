@@ -1,5 +1,4 @@
 using Bedrock.Application.DataTransferObjects;
-using Bedrock.Application.ValueObjects;
 
 namespace Bedrock.Application.Interfaces
 {
@@ -83,7 +82,7 @@ namespace Bedrock.Application.Interfaces
         /// </summary>
         /// <param name="menus"></param>
         /// <returns></returns>
-        List<RouterVO> BuildRouterData(List<SysMenuDto> menus);
+        List<RouterDto> BuildRouterData(List<SysMenuDto> menus);
 
         /// <summary>
         /// 构建前端需要的树形选择控件数据
@@ -97,7 +96,7 @@ namespace Bedrock.Application.Interfaces
         /// </summary>
         /// <param name="userId">用户 ID</param>
         /// <returns></returns>
-        Task<List<RouterVO>> GetRouterDataByUserId(long userId);
+        Task<List<RouterDto>> GetRouterDataByUserId(long userId);
 
         /// <summary>
         /// 根据角色 ID 获取树形选择控件数据。

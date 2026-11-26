@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bedrock.Application.ValueObjects
+namespace Bedrock.Application.DataTransferObjects
 {
     /// <summary>
-    /// 前端路由值对象（VO），描述一个可展示的路由节点。
+    /// 前端路由数据传输对象，描述一个可展示的路由节点。
     /// </summary>
-    public class RouterVO
+    public class RouterDto
     {
         /// <summary>
         /// 路由名称。
@@ -48,11 +48,11 @@ namespace Bedrock.Application.ValueObjects
         /// <summary>
         /// 路由的元信息。
         /// </summary>
-        public MetaVO? Meta { get; set; }
+        public RouterMetaDto? Meta { get; set; }
 
         /// <summary>
         /// 子路由列表。
         /// </summary>
-        public List<RouterVO> Children { get; set; } = new();
+        public List<RouterDto> Children { get; set; } = new();
     }
 }

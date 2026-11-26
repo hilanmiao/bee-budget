@@ -1,5 +1,4 @@
 ﻿using Bedrock.Application.DataTransferObjects;
-using Bedrock.Application.ValueObjects;
 using System.Security.Claims;
 
 namespace Bedrock.Application.Interfaces
@@ -16,7 +15,7 @@ namespace Bedrock.Application.Interfaces
     /// - ✅ GetAuthInfoAsync：前端动态权限渲染（角色+权限集合）
     /// 
     /// 🔐 安全设计契约（实现者必须遵守）：
-    /// - 所有 RefreshToken 操作必须验证有效性 → 获取 UserId（通过 RefreshTokenMetadataVO）
+    /// - 所有 RefreshToken 操作必须验证有效性 → 获取 UserId（通过 RefreshTokenMetaDto）
     /// - 登录/刷新时应记录 Device/IP/UserAgent（虽不体现在接口，但实现层应支持）
     /// - 撤销操作必须幂等（重复调用不报错）
     /// - 密码错误必须统一提示“用户名或密码错误”，防止枚举攻击
@@ -49,11 +48,11 @@ namespace Bedrock.Application.Interfaces
         /// - LoginDto 可扩展为支持手机号/邮箱/第三方登录
         /// </summary>
         /// <param name="loginDto">登录请求数据（含用户名、密码、验证码）</param>
-        /// <param name="clientInfoVO">客户端信息（设备、IP、UserAgent）</param>
+        /// <param name="clientInfoDto">客户端信息（设备、IP、UserAgent）</param>
         /// <returns>包含 AccessToken、RefreshToken、ExpiresAt 的响应对象</returns>
         /// <exception cref="ArgumentException">参数缺失或验证码错误</exception>
         /// <exception cref="SecurityTokenException">内部令牌签发失败</exception>
-        Task<LoginResponseDto> AuthenticateAsync(LoginDto loginDto, ClientInfoVO clientInfoVO);
+        Task<LoginResponseDto> AuthenticateAsync(LoginDto loginDto, ClientInfoDto clientInfoDto);
 
         /// <summary>
         /// 🔄 使用 RefreshToken 刷新获取新令牌对。
@@ -71,12 +70,12 @@ namespace Bedrock.Application.Interfaces
         /// </summary>
         /// <param name="userId">用户唯一标识（long 类型）。</param>
         /// <param name="refreshTokenId">客户端提供的刷新令牌的唯一标识</param>
-        /// <param name="clientInfoVO">客户端信息（设备、IP、UserAgent）</param>
+        /// <param name="clientInfoDto">客户端信息（设备、IP、UserAgent）</param>
         /// <returns>包含新 AccessToken、新 RefreshTokenId、新 ExpiresAt 的响应对象</returns>
         /// <exception cref="ArgumentException">RefreshTokenId 为空</exception>
         /// <exception cref="SecurityTokenException">RefreshToken 无效或过期</exception>
         /// <exception cref="KeyNotFoundException">用户不存在</exception>
-        Task<LoginResponseDto> RefreshTokenAsync(long userId, string refreshTokenId, ClientInfoVO clientInfoVO);
+        Task<LoginResponseDto> RefreshTokenAsync(long userId, string refreshTokenId, ClientInfoDto clientInfoDto);
 
         /// <summary>
         /// ✅ 验证访问令牌（AccessToken）是否有效。

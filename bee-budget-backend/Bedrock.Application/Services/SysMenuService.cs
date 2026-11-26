@@ -1,6 +1,5 @@
 using Bedrock.Application.DataTransferObjects;
 using Bedrock.Application.Interfaces;
-using Bedrock.Application.ValueObjects;
 using Bedrock.Core.Entities;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -661,18 +660,18 @@ namespace Bedrock.Application.Services
         /// </summary>
         /// <param name="menus"></param>
         /// <returns></returns>
-        public List<RouterVO> BuildRouterData(List<SysMenuDto> menus)
+        public List<RouterDto> BuildRouterData(List<SysMenuDto> menus)
         {
-            List<RouterVO> routers = new List<RouterVO>();
+            List<RouterDto> routers = new List<RouterDto>();
             foreach (var menu in menus)
             {
-                RouterVO router = new RouterVO();
+                RouterDto router = new RouterDto();
                 router.Hidden = menu.Visible == "1";
                 router.Name = GetRouterName(menu);
                 router.Path = GetRouterPath(menu);
                 router.Component = GetComponent(menu);
                 router.Query = menu.Query;
-                router.Meta = new MetaVO(menu.Name, menu.Icon, YES_CACHE.Equals(menu.IsCache), menu.Path);
+                router.Meta = new RouterMetaDto(menu.Name, menu.Icon, YES_CACHE.Equals(menu.IsCache), menu.Path);
                 List<SysMenuDto>? cMenus = menu.Children;
 
                 // 目录
@@ -686,12 +685,12 @@ namespace Bedrock.Application.Services
                 else if (IsLevel1Menu(menu))
                 {
                     router.Meta = null;
-                    List<RouterVO> childrenList = new List<RouterVO>();
-                    RouterVO children = new RouterVO();
+                    List<RouterDto> childrenList = new List<RouterDto>();
+                    RouterDto children = new RouterDto();
                     children.Path = menu.Path;
                     children.Component = menu.Component;
                     children.Name = (!string.IsNullOrWhiteSpace(menu.RouteName) ? menu.RouteName! : menu.Path!).Pascalize();
-                    children.Meta = new MetaVO(menu.Name, menu.Icon, YES_CACHE.Equals(menu.IsCache), menu.Path);
+                    children.Meta = new RouterMetaDto(menu.Name, menu.Icon, YES_CACHE.Equals(menu.IsCache), menu.Path);
                     children.Query = menu.Query;
                     childrenList.Add(children);
                     router.Children = childrenList;
@@ -699,15 +698,15 @@ namespace Bedrock.Application.Services
                 // 内链方式打开外网链接（特殊一级菜单直接打开外网链接，和目录下的内链打开外链区分开）
                 else if (menu.ParentId == 0 && IsInnerLink(menu))
                 {
-                    router.Meta = new MetaVO(menu.Name, menu.Icon);
+                    router.Meta = new RouterMetaDto(menu.Name, menu.Icon);
                     router.Path = "/";
-                    List<RouterVO> childrenList = new List<RouterVO>();
-                    RouterVO children = new RouterVO();
+                    List<RouterDto> childrenList = new List<RouterDto>();
+                    RouterDto children = new RouterDto();
                     string routerPath = InnerLinkReplaceEach(menu.Path!);
                     children.Path = routerPath;
                     children.Component = INNER_LINK;
                     children.Name = routerPath;
-                    children.Meta = new MetaVO(menu.Name, menu.Icon, menu.Path);
+                    children.Meta = new RouterMetaDto(menu.Name, menu.Icon, menu.Path);
                     childrenList.Add(children);
                     router.Children = childrenList;
                 }
@@ -733,7 +732,7 @@ namespace Bedrock.Application.Services
         /// </summary>
         /// <param name="userId">用户 ID</param>
         /// <returns></returns>
-        public async Task<List<RouterVO>> GetRouterDataByUserId(long userId)
+        public async Task<List<RouterDto>> GetRouterDataByUserId(long userId)
         {
             var menuList = await GetAllByUserIdAsync(userId);
             // 路由只需要目录和菜单
